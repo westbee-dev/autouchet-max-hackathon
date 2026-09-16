@@ -1,0 +1,28 @@
+# C#
+**/bin/
+**/obj/
+**/*.user
+**/*.suo
+**/*.vs/
+
+# Node.js
+**/node_modules/
+**/dist/
+**/.env
+
+# IDE
+**/.idea/
+**/.vscode/
+**/*.swp
+**/*.swo
+
+# Docker
+**/.dockerignore
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+
+# Secrets
+**/.env
+**/.env.local
