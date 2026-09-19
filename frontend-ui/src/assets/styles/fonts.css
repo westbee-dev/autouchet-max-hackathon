@@ -32,3 +32,17 @@
     font-style: normal;
     font-display: swap;
 }
+
+@font-face {
+    font-family: 'SF Pro Display-Black';
+    src: url('../fonts/SF-Pro-Display-Black.otf');
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SF Pro Display-Heavy';
+    src: url('../fonts/SF-Pro-Display-Heavy.otf');
+    font-style: normal;
+    font-display: swap;
+}

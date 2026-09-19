@@ -76,10 +76,6 @@ span {
     border-radius: 10px;
 }
 
-.rope_line {
-    border-top: 1px dashed #99999f;
-}
-
 .container_content_history {
     display: inline-block;
     width: 100%;

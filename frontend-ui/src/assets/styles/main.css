@@ -1,20 +1,5 @@
 @import "fonts.css";
 
-.number {
-    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
-    color: #1f1f1f;
-}
-
-.letter {
-    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
-    color: #86868b;
-}
-
-.date {
-    font-family: 'SF Pro Display-Light', sans-serif, Arial;
-    color: #8f8f93;
-}
-
 .container {
     display: grid;
     grid-template-columns: 1fr;
@@ -35,6 +20,10 @@
     height: 29px;
     box-sizing: border-box;
     margin: 10px 0px 0px 0px;
+}
+
+.rope_line {
+    border-top: 1px dashed #99999f;
 }
 
 .header_text {
