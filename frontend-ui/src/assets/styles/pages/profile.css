@@ -1,0 +1,166 @@
+a {
+    text-decoration: none;
+}
+
+.back_button {
+    margin: 9px 11px 0 7px;
+}
+
+.profile_info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 16px;
+    margin: 10px 0 0 0;
+}
+
+.status_id {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #86868b;
+    font-size: 13px;
+    margin: 4px 0 0 0;
+}
+
+.cases {
+    margin: 15px 0 0 0;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.case {
+    width: 142px;
+    height: 65px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #ffffff;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    border-radius: 13px;
+    padding: 0 0 0 10px;
+    box-shadow: 2px 16px 18px 1px rgba(0, 0, 0, 0.09);
+    gap: 7px;
+}
+
+.case_number {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 16px;
+}
+
+.case_text {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #86868b;
+    font-size: 10px;    
+}
+
+.activity {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.activity_container {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 0 17px;
+    margin: 15px 0 0 0;
+}
+
+.activity_title {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #86868b;
+    font-size: 12px;
+}
+
+.activity_description {
+    font-family: 'SF Pro Display-Light', sans-serif, Arial;
+    color: #86868b;
+    font-size: 11px;
+}
+
+.activity_list {
+    margin: 12px 0 0 0;
+    padding-right: 10px;
+    height: 140px;
+    overflow-y: auto;
+}
+
+.activity_item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 0;
+}
+
+.activity_item_info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity_item_star {
+    color: #d0d0d0;
+    font-size: 13px;
+}
+
+.activity_item--default .activity_item_star {
+    color: #f5c451;
+}
+
+.activity_item_name {
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+    color: #86868b;
+    font-size: 13px;
+}
+
+.activity_item--default .activity_item_name {
+    color: #1f1f1f;
+}
+
+.activity_item_remove {
+    background: none;
+    border: none;
+    color: #8f8f93;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.activity_form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 19px 17px 0 17px;
+}
+
+.activity_input {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 13px;
+    color: #1f1f1f;
+    border: none;
+    border-radius: 9px;
+    background-color: #ffffff;
+    padding: 12px 14px;
+    outline: none;
+}
+
+.activity_add_btn {
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+    font-size: 13px;
+    color: #1f1f1f;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 9px;
+    padding: 14px 0;
+}

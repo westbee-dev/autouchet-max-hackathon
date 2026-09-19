@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/profile.css">
+    <title>profile</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Профиль</span>
+        </header>
+
+        <main>
+            <div class="profile_info">
+                <img src="../assets/images/avatar_profile.png" alt="Аватар">
+                <span class="full_name">Андрей Матковский</span>
+            </div>
+
+            <div class="status_id">
+                <span class="status_text">Самозанятый · Видеомонтаж</span>
+                <span class="id_text">@whydronchik</span>
+            </div>
+
+            <div class="cases">
+                <div class="left_case case">
+                    <span class="case_number">7</span>
+                    <span class="case_text">чеков за год</span>
+                </div>
+
+                <div class="right_case case">
+                    <span class="case_number">1&nbsp&nbsp455&nbsp&nbsp000&nbsp₽</span>
+                    <span class="case_text">доход за год</span>
+                </div>
+            </div>
+
+            <div class="activity_container">
+                <div class="activity">
+                    <span class="activity_title">Мои виды деятельности</span>
+                    <span class="activity_description">Звездочкой отмечен вариант по умолчанию при создании чека. Его можно изменить, выбрав любой другой из списка</span>
+                </div>
+
+                <div class="activity_list">
+                    <div class="rope_line"></div>
+
+                    <div class="activity_item activity_item--default">
+                        <div class="activity_item_info">
+                            <span class="activity_item_star">★</span>
+                            <span class="activity_item_name">Видеомонтаж</span>
+                        </div>
+                        <button type="button" class="activity_item_remove" aria-label="Удалить">×</button>
+                    </div>
+
+                    <div class="rope_line"></div>
+
+                    <div class="activity_item">
+                        <div class="activity_item_info">
+                            <span class="activity_item_star">★</span>
+                            <span class="activity_item_name">Репетиторство по английскому</span>
+                        </div>
+                        <button type="button" class="activity_item_remove" aria-label="Удалить">×</button>
+                    </div>
+
+                    <div class="rope_line"></div>
+
+                    <div class="activity_item">
+                        <div class="activity_item_info">
+                            <span class="activity_item_star">★</span>
+                            <span class="activity_item_name">Массаж</span>
+                        </div>
+                        <button type="button" class="activity_item_remove" aria-label="Удалить">×</button>
+                    </div>
+
+                    <div class="rope_line"></div>
+    
+                    <div class="activity_item">
+                        <div class="activity_item_info">
+                            <span class="activity_item_star">★</span>
+                            <span class="activity_item_name">Репетиторство по физике</span>
+                        </div>
+                        <button type="button" class="activity_item_remove" aria-label="Удалить">×</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <form class="activity_form">
+                    <input type="text" class="activity_input" placeholder="Например «Ремонт квартиры»">
+                    <button type="submit" class="activity_add_btn">Добавить деятельность</button>
+                </form>
+        </footer>
+    </div>
+</body>
+</html>
