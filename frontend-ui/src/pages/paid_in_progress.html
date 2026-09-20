@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/paid_in_progress.css">
+    <title>Платеж в обработке</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="receipt.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Ожидание оплаты</span>
+            <a href="home.html" class="close_link">
+                <span class="back_home_button">×</span>
+            </a>
+        </header>
+
+        <main>
+            <div class="status_content">
+                <div class="process"></div>
+            </div>
+
+            <div class="status_info">
+                <span class="info_header">Ждем оплату от клиента</span>
+                <span class="desc_header">Ссылка отправлена клиенту в чат и действует 24 часа. Как только клиент оплатит, чек появится в ленте автоматически</span>
+            </div>
+
+            <div class="amount">
+                <span class="sum">5&nbsp;&nbsp;000&nbsp;₽</span>
+                <span class="amount_desc">Физ. лицо - счет RB-88303</span>
+            </div>
+            <footer class="link_button">
+                <button type="button" class="button" id="copy_link">Скопировать ссылку еще раз</button>
+            </footer>
+            <!-- Скрипт копирования ссылки -->
+        </main>
+    </div>
+</body>
+</html>
