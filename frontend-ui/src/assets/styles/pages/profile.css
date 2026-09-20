@@ -2,10 +2,6 @@ a {
     text-decoration: none;
 }
 
-.back_button {
-    margin: 9px 11px 0 7px;
-}
-
 .profile_info {
     display: flex;
     justify-content: center;

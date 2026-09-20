@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/receipt.css">
+    <title>Новый чек</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Новый чек</span>
+        </header>
+
+        <main>
+            <form class="receipt_form" id="receipt-form">
+                <div class="receipt_info">
+                    <span class="header_txt">Тип покупателя</span>
+
+                    <div class="customer_type_toggle">
+                        <div class="customer_case">
+                            <input type="radio" name="customer_type" id="type_individual" value="individual" class="toggle_input description" checked>
+                            <label for="type_individual" class="toggle_title">Физическое лицо</label>
+                        </div>
+                        
+                        <div class="customer_case">
+                            <input type="radio" name="customer_type" id="type_legal" value="legal" class="toggle_input description">
+                            <label for="type_legal" class="toggle_title">Юридическое лицо</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="receipt_info">
+                    <label for="amount" class="header_txt">Сумма</label>
+                    <input type="number" inputmode="numeric" name="amount" id="amount" class="amount_input" placeholder="0" min="0">
+                </div>
+
+                <div class="receipt_info arrow_fix">
+                    <label for="activity" class="header_txt">Вид деятельности</label>
+                    <select name="activity" id="activity" class="activity_select">
+                        <option value="1 option">Видеомонтаж</option>
+                        <option value="2 option">Репетиторство по английскому</option>
+                        <option value="3 option">Массаж</option>
+                    </select>
+                </div>
+            </form>
+            <!-- Реализовать, что для юр лиц нельзя формировать чеки на оплату -->
+        </main>
+
+        <footer class="receipt_footer">
+            <button type="submit" form="receipt-form" class="button button_individual">Отправить ссылку на оплату</button>
+            <button type="button" class="button button_legal" id="fix_paid">Зафиксировать оплату</button>
+        </footer>
+    </div>
+</body>
+</html>
