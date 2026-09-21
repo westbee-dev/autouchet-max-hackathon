@@ -17,8 +17,9 @@ namespace Autouchet_Bot.Keyboards
                 Url = miniAppUrl
             };
 
-            var helpButton = new Callback
+            var helpButton = new CallbackButton
             {
+                Text = "Помощь",
                 Payload = "help"
             };
 
