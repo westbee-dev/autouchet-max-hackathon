@@ -45,7 +45,7 @@ namespace Autouchet_Bot.Keyboards
                     {
                         new List<Button>
                         {
-                            new CallbackButton { Text = "Что за приложение?",
+                            new CallbackButton { Text = "Для чего нужен MiniApps автоучёт?",
                                 Payload = "help_about_app" }
                         },
                         new List<Button>
@@ -55,7 +55,7 @@ namespace Autouchet_Bot.Keyboards
                         },
                         new List<Button>
                         {
-                            new CallbackButton { Text = "Не нашел ответ на свой вопрос",
+                            new CallbackButton { Text = "Другой вопрос",
                                 Payload = "help_support" }
                         },
                         new List<Button>
