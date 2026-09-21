@@ -19,21 +19,27 @@ namespace Autouchet_Bot.Controllers
         {
             _botClient = botClient;
         }
-        /// POST: api/notification/send отправка уведомлений в чат
+
+        /// POST: api/notification/send
         [HttpPost("send")]
         public async Task<IActionResult> SendNotification([FromBody] SendNotificationDto dto)
         {
-            if (dto.ChatId <= 0 || string.IsNullOrWhiteSpace(dto.Message))
+            if (dto.MaxUserId <= 0)
             {
-                return BadRequest(new { success = false, error = "Неверный ChatId" });
+                return BadRequest(new { success = false, error = "Неверный MaxUserId" });
             }
 
             try
             {
+                // Формируем текст уведомления для пользователя
+                string messageText = $"✅ **Оплата успешно получена!**\n\n" +
+                                     $"💳 **Сумма:** {dto.Amount} руб.\n" +
+                                     $"📝 **Назначение:** {dto.Purpose}";
+
                 await _botClient.SendMessageAsync(new SendMessageRequest
                 {
-                    ChatId = dto.ChatId,
-                    Text = dto.Message,
+                    ChatId = dto.MaxUserId,
+                    Text = messageText,
                     Format = MessageFormat.Markdown
                 });
 
