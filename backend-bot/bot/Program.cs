@@ -18,7 +18,7 @@ class Bot
         Env.Load();
         string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX");
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");
-        var client = new MaxBotClient("botToken");
+        var client = new MaxBotClient(botToken);
         var messageHandler = new MessageHandler(miniAppUrl);
         var botInfo = await client.GetMeAsync();
         Console.WriteLine($"Бот запущен: {botInfo.FirstName} (ID: {botInfo.Id})");
