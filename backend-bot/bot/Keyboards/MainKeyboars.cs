@@ -1,4 +1,3 @@
-
 using MAX.Bot.Interfaces.Models.Request.Message;
 using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
@@ -35,6 +34,7 @@ namespace Autouchet_Bot.Keyboards
                 }
             };
         }
+
         public static Attachment GetHelpMenu()
         {
             return new InlineKeyboardAttachment
@@ -45,12 +45,12 @@ namespace Autouchet_Bot.Keyboards
                     {
                         new List<Button>
                         {
-                            new CallbackButton { Text = "Что за приложение?", 
+                            new CallbackButton { Text = "Что за приложение?",
                                 Payload = "help_about_app" }
                         },
                         new List<Button>
                         {
-                            new CallbackButton { Text = "Что такое самозанятость?", 
+                            new CallbackButton { Text = "Что такое самозанятость?",
                                 Payload = "help_self_employed" }
                         },
                         new List<Button>
@@ -61,6 +61,52 @@ namespace Autouchet_Bot.Keyboards
                         new List<Button>
                         {
                             new CallbackButton { Text = "Назад", Payload = "help_back" }
+                        }
+                    }
+                }
+            };
+        }
+
+        public static Attachment GetAgreementKeyboard()
+        {
+            return new InlineKeyboardAttachment
+            {
+                Payload = new InlineKeyboardPayload
+                {
+                    Buttons = new List<List<Button>>
+                    {
+                        new List<Button>
+                        {
+                            new CallbackButton
+                            {
+                                Text = "Принять",
+                                Payload = "accept_agreement"
+                            },
+                            new CallbackButton
+                            {
+                                Text = "Отклонить",
+                                Payload = "decline_agreement"
+                            }
+                        }
+                    }
+                }
+            };
+        }
+        public static Attachment GetBackToAgreementKeyboard()
+        {
+            return new InlineKeyboardAttachment
+            {
+                Payload = new InlineKeyboardPayload
+                {
+                    Buttons = new List<List<Button>>
+                    {
+                        new List<Button>
+                        {
+                            new CallbackButton
+                            {
+                                Text = "Назад",
+                                Payload = "back_to_agreement"
+                            }
                         }
                     }
                 }

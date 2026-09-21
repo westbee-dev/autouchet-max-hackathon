@@ -1,11 +1,12 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Autouchet_Bot.Keyboards;
+using Autouchet_Bot.Services;
 using MAX.Bot;
 using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request;
 using MAX.Bot.Interfaces.Models.Request.Message;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
-using Autouchet_Bot.Keyboards;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Autouchet_Bot.Handlers
 {
@@ -28,10 +29,29 @@ namespace Autouchet_Bot.Handlers
 
             string payload = callback.Payload;
             string responseText = string.Empty;
+            long senderId = callback.User.Id;
             Attachment keyboard = null;
 
             switch (payload)
             {
+                case "accept_agreement":
+                    UserService.Accept(senderId);
+                    responseText = "Вы приняли согласие, теперь можете использовать бота!";
+                    keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
+                    break;
+
+                case "decline_agreement":
+                    responseText = "Без согласия, пользоваться ботом невозможно! " +
+                        "Вернитесь в начало";
+                    keyboard = MainKeyboard.GetBackToAgreementKeyboard(); 
+                    break;
+
+                case "back_to_agreement":
+                    responseText = $"Для использования бота, нужно" +
+                        $" принять пользовательское соглашение";
+                    keyboard = MainKeyboard.GetAgreementKeyboard();
+                    break;
+
                 case "help":
                     responseText = "Вы попали в раздел помощи. Выбирите " +
                         "интересующий вопрос";
@@ -63,13 +83,19 @@ namespace Autouchet_Bot.Handlers
                     return;
             }
 
+            List<Attachment> attachments = null;
+            if (keyboard != null)
+            {
+                attachments = new List<Attachment> { keyboard };
+            }
+
             var answerRequest = new AnswerCallbackRequest
             {
                 CallbackId = callback.CallbackId,
                 Message = new NewMessageBody
                 {
                     Text = responseText,
-                    Attachments = new List<Attachment> { keyboard },
+                    Attachments = attachments,
                     Format = MessageFormat.Markdown
                 }
             };
