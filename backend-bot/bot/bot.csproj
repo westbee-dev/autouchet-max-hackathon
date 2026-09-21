@@ -8,7 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+  
+    <PackageReference Include="DotNetEnv" Version="3.2.0" />
     <PackageReference Include="SaaSoft.MAX.Bot" Version="1.2.2" />
   </ItemGroup>
-
+  
+  <ItemGroup>
+    <None Update=".env">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
 </Project>
