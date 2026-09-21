@@ -18,30 +18,6 @@ class Bot
         string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX");
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");
         var client = new MaxBotClient("botToken");
-        var messageHandler = new MessageHandler(miniAppUrl);
-
-            var botInfo = await lient.GetMeAsync();
-            Console.WriteLine($"Бот запущен: {botInfo.FirstName} (ID: {botInfo.Id})");
-
-            using var cts = new CancellationTokenSource();
-
-            var _ = client.PollUpdatesWithCallback(
-            async (update, client) =>
-            {
-                if (update is MessageCreatedUpdate messageCreated)
-                {
-                    await messageHandler.HandleAsync(messageCreated, client);
-                }
-            },
-            limit: 100,
-            timeout: 90,
-            types: new List<string> { UpdateTypes.MessageCreated },
-            cancellationToken: cts.Token
-        );
-
-        Console.WriteLine("Нажмите Enter для завершения работы бота...");
-        Console.ReadLine();
-        cts.Cancel();
-    }
+       
 }
 }
