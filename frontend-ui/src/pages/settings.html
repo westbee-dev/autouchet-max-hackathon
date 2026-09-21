@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/settings.css">
+    <title>Настройки</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Настройки</span>
+        </header>
+
+        <main>
+            <div class="remind">
+                <div class="text_block">
+                    <span class="text_header">Напоминать о налоге</span>
+                    <span class="text_description">Бот напишет за 5 и за 1 день до 25 числа</span>
+                </div>
+
+                <label class="switch">
+                    <input type="checkbox" class="switch_input" checked>
+                    <span class="switch_track"></span>
+                </label>
+            </div>
+
+            <div class="activity">
+                <div class="text_block">
+                    <span class="text_header">Виды деятельности</span>
+                    <span class="text_description">Список и выбор основного вида в профиле</span>
+                </div>
+
+                <a href="profile.html" class="settings_button">Открыть</a>
+            </div>
+
+            <div class="taxes">
+                <span class="taxes_header">Ставки на налоги</span>
+
+                <div class="dashboard">
+                    <div class="items">
+                        <span class="txt">С физ. лиц</span>
+                        <span class="dots"></span>
+                        <span class="numbers">4%</span>
+                    </div>
+
+                    <div class="items">
+                        <span class="txt">С юр. лиц или ИП</span>
+                        <span class="dots"></span>
+                        <span class="numbers">5%</span>
+                    </div>
+                </div>
+
+                <span class="info">Ставка определяется типом покупателя в каждом чеке, изменить ее напрямую нельзя</span>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
