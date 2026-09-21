@@ -20,6 +20,7 @@ class Bot
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");
         var client = new MaxBotClient(botToken);
         var messageHandler = new MessageHandler(miniAppUrl);
+        var callbackHandler = new CallbackHandler(miniAppUrl);
         var botInfo = await client.GetMeAsync();
         Console.WriteLine($"Бот запущен: {botInfo.FirstName} (ID: {botInfo.Id})");
         using var cts = new CancellationTokenSource();
@@ -31,10 +32,18 @@ class Bot
                 {
                     await messageHandler.HandleAsync(messageCreated, client);
                 }
+                else if (update is MessageCallbackUpdate callbackUpdate)
+                {
+                    await callbackHandler.HandleAsync(callbackUpdate, client);
+                }
             },
             limit: 100,
             timeout: 90,
-            types: new List<string> { UpdateTypes.MessageCreated },
+            types: new List<string> 
+            { 
+              UpdateTypes.MessageCreated,
+              UpdateTypes.MessageCallback
+            },
             cancellationToken: cts.Token
         );
 
