@@ -1,0 +1,62 @@
+.container_info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 11px;
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    width: 284px;
+    height: 212px;
+    background-color: #ffffff;
+    margin: 27px auto;
+    color:#86868b;
+    gap: 20px;
+    border-radius: 13px;
+    box-shadow: 2px 16px 18px 1px rgba(0, 0, 0, 0.09);
+}
+
+.items {
+    display: flex;
+    align-items: baseline;
+    white-space: nowrap;
+    margin: 0 10px;
+}
+
+.txt {
+    flex-shrink: 0;
+}
+
+.dots {
+    flex: 1;
+    overflow: hidden;
+    margin: 0 7px;
+    align-self: center;
+    border-bottom: 1px dotted #c7c7cc;
+}
+
+.numbers {
+    color: #1d1d1f;
+    flex-shrink: 0;
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+}
+
+.link_button {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 15px auto;
+    width: 100%;
+    max-width: 284px;
+    height: 37px;
+}
+
+.button {
+    border: none;
+    outline: none;
+    border-radius: 9px;
+    background-color: #ffffff;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 10px 0;
+}
