@@ -35,5 +35,36 @@ namespace Autouchet_Bot.Keyboards
                 }
             };
         }
+        public static Attachment GetHelpMenu()
+        {
+            return new InlineKeyboardAttachment
+            {
+                Payload = new InlineKeyboardPayload
+                {
+                    Buttons = new List<List<Button>>
+                    {
+                        new List<Button>
+                        {
+                            new CallbackButton { Text = "Что за приложение?", 
+                                Payload = "help_about_app" }
+                        },
+                        new List<Button>
+                        {
+                            new CallbackButton { Text = "Что такое самозанятость?", 
+                                Payload = "help_self_employed" }
+                        },
+                        new List<Button>
+                        {
+                            new CallbackButton { Text = "Не нашел ответ на свой вопрос",
+                                Payload = "help_support" }
+                        },
+                        new List<Button>
+                        {
+                            new CallbackButton { Text = "Назад", Payload = "help_back" }
+                        }
+                    }
+                }
+            };
+        }
     }
 }

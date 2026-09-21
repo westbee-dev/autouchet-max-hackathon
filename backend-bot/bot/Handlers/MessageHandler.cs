@@ -33,7 +33,7 @@ namespace Autouchet_Bot.Handlers
             string responseText;
             if (text.Equals("/start", StringComparison.OrdinalIgnoreCase))
             {
-                responseText = $"Привет, {firstName}! Добро пожаловать.";
+                responseText = $"Привет, {firstName}! Добро пожаловать в автоучёт";
             }
             else
             {
