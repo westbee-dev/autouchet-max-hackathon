@@ -29,25 +29,36 @@ namespace AutoUchet.Api.Controllers
                 taxDate = taxDate.AddMonths(1);
                 deadlineDate = CreateDeadlineDate(nowDate.AddMonths(1));
             }
-            
-            var taxAmount = await _context.Receipts
+
+            var totalIncomeMonth = await _context.Receipts
                 .Where(
                 r => r.CreatedAt.Month == taxDate.Month &&
                 r.CreatedAt.Year == taxDate.Year && 
                 r.Status == "Paid")
                 .SumAsync(r =>  r.Amount);
 
+            var taxAmount = totalIncomeMonth * 0.04m;
+
             var totalIncomeYear = await _context.Receipts
                 .Where(
                 r => r.Status == "Paid" &&
-                r.CreatedAt.Year == taxDate.Year)
+                r.CreatedAt.Year == nowDate.Year)
                 .SumAsync(r => r.Amount);
 
             var limitPercent = Math.Round(((totalIncomeYear / 2_400_000m) * 100), 1);
 
-            var taxPeriodText = $"К уплате за {tax}";
-            var deadlineText = 
+            var taxMonth = taxDate.ToString("MMMM", culture);
+            var taxPeriodText = $"К уплате за {taxMonth}";
+            var deadlineText = $"до {deadlineDate:dd.MM}";
 
+            return new DashboardResponseDto
+            {
+                TaxPeriodText = taxPeriodText,
+                TaxAmount = taxAmount,
+                DeadlineText = deadlineText,
+                TotalIncomeYear = totalIncomeYear,
+                LimitPercent = limitPercent
+            };
         }
 
         private static DateTime CreateDeadlineDate(DateTime nowDate)
