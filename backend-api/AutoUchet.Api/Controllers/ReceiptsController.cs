@@ -42,6 +42,7 @@ namespace AutoUchet.Api.Controllers
             ([FromBody] CreateReceiptRequestDto dto)
         {
             var invoiceId = Guid.NewGuid().ToString();
+            var paymentUrl = $"https://robokassa.fake/pay?inv={invoiceId}";
 
             var receipt = new Receipt
             {
@@ -58,8 +59,6 @@ namespace AutoUchet.Api.Controllers
             _context.Receipts.Add(receipt);
             await _context.SaveChangesAsync();
 
-            var paymentUrl = $"https://robokassa.fake/pay?inv={invoiceId}";
-
             var response = new CreateReceiptResponseDto
             {
                 Id = receipt.Id,
@@ -74,8 +73,7 @@ namespace AutoUchet.Api.Controllers
         public async Task<ActionResult<CreateReceiptResponseDto>> CreateReceiptWithoutPaymentLink
             ([FromBody] CreateReceiptRequestDto dto)
         {
-            var mockFnsId = Guid.NewGuid().ToString();
-            var mockFnsUrl = $"https://mock-fns.local/receipt/{mockFnsId}";
+            var mockFnsUrl = Services.MockServices.CreateMockFnsUrl();
 
             var receipt = new Receipt
             {
