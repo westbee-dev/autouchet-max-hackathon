@@ -1,0 +1,46 @@
+.faq_container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 290px;
+    max-height: 400px;
+    margin: 21px auto;
+}
+
+.faq_item {
+    width: 100%;
+}
+
+.faq_text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 14px;
+    margin: 18px 10px;
+    cursor: pointer;
+    list-style: none;
+}
+
+.faq_text::-webkit-details-marker {
+    display: none;
+}
+
+.faq_arrow {
+    flex-shrink: 0;
+    color: #86868b;
+    transition: transform 0.1s ease-in;
+}
+
+.faq_item[open] .faq_arrow {
+    transform: rotate(180deg);
+}
+
+.faq_answer {
+    margin: 0 25px 18px 10px;
+    font-family: 'SF Pro Display-Light', sans-serif, Arial;
+    color: #86868b;
+    font-size: 13px;
+}

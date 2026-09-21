@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/faq.css">
+    <title>Помощь</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Помощь</span>
+        </header>
+
+        <main>
+            <div class="faq_container">
+                <div class="rope_line"></div>
+
+                <details class="faq_item" name="faq_item">
+                    <summary class="faq_text">
+                        Откуда бот знает сумму к уплате?
+                        <span class="faq_arrow">▼</span>
+                    </summary>
+                    <p class="faq_answer">Каждую ночь приложение складывает чеки за предыдущий календарный месяц со статусом «оплачен» или «зафиксирован вручную» и умножает сумму каждого на его ставку - 4% для физлиц, 6% для юрлиц. Эта же сумма показана в ленте.</p>
+                </details>
+
+                <div class="rope_line"></div>
+
+                <details class="faq_item" name="faq_item">
+                    <summary class="faq_text">
+                        Почему ставка налога не одна для всех чеков?
+                        <span class="faq_arrow">▼</span>
+                    </summary>
+                    <p class="faq_answer">Ставка зависит не от настройки, а от типа покупателя в конкретном чеке: с физлиц - 4%, с юрлиц и ИП - 6%. Изменить ее вручную нельзя.</p>
+                </details>
+
+                <div class="rope_line"></div>
+
+                <details class="faq_item" name="faq_item">
+                    <summary class="faq_text">
+                        Что будет, если я превышу лимит 2,4 млн ₽ в год?
+                        <span class="faq_arrow">▼</span>
+                    </summary>
+                    <p class="faq_answer">Приложение не блокирует создание чеков - решение о потере статуса самозанятого принимает ФНС. Но при приближении к лимиту лента предупредит цветом и баннером.</p>
+                </details>
+
+                <div class="rope_line"></div>
+
+                <details class="faq_item" name="faq_item">
+                    <summary class="faq_text">
+                        Можно ли принять оплату от юр. лица через ссылку?
+                        <span class="faq_arrow">▼</span>
+                    </summary>
+                    <p class="faq_answer">Пока нет - автосвязка с Robokassa в мини-приложении работает только для физлиц. Оплату от юрлица нужно зафиксировать вручную после получения денег.</p>
+                </details>
+
+                <div class="rope_line"></div>
+
+                <details class="faq_item" name="faq_item">
+                    <summary class="faq_text">
+                        Что будет с чеком, если ссылка на оплату истекла?
+                        <span class="faq_arrow">▼</span>
+                    </summary>
+                    <p class="faq_answer">Он останется в истории со статусом «истек», а доход по нему не учитывается. С экрана ошибки можно сразу создать новую ссылку на ту же сумму.</p>
+                </details>
+            </div>
+        </main>
+        <!-- Написать скрипт для открытия плавно -->
+    </div>
+</body>
+</html>
