@@ -2,13 +2,8 @@ using Autouchet_Bot.Keyboards;
 using Autouchet_Bot.Services;
 using MAX.Bot;
 using MAX.Bot.Interfaces.Models;
-using MAX.Bot.Interfaces.Models.Request;
 using MAX.Bot.Interfaces.Models.Request.Message;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
-using MAX.Bot.Interfaces.Models.Request.Message.Attachment.Payloads;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Autouchet_Bot.Handlers
 {
@@ -69,12 +64,14 @@ namespace Autouchet_Bot.Handlers
         {
             string text = $"Здравствуйте, {firstName}!\n\n" +
                           "Перед началом использования бота, " +
-                          "пожалуйста, ознакомьтесь с пользовательским соглашением " +
-                          "и примите его, нажав на соответствующую кнопку ниже." +
-                          "1. Мы не несем ответственность за данные, которые вы предоставляет" +
-                          "2. бла бла бла"
-                          +
-                          "ля ля ля";
+                          "пожалуйста, ознакомьтесь с пользовательским соглашением\n" +
+                          "и дайте ответ, нажав на соответствующую кнопку ниже. \n" +
+                          "1. Мы не несем ответственность за коректность и достоверность данных, которые вы ввели \n" +
+                          "2. Мы не несем ответственность за сбои, которые произошли не на нашей стороне \n" +
+                          "3. Используя бота, вы соглашаетесь на обработку " +
+                          "персональных данных, необходимых для работы сервиса \n" +
+                          "4. Пользователь самостоятельно отвечает за своевременное формирование чеков и оплату налога"
+                          ;
 
             var attachments = new List<Attachment>
             {

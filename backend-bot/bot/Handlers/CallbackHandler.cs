@@ -36,13 +36,13 @@ namespace Autouchet_Bot.Handlers
             {
                 case "accept_agreement":
                     UserService.Accept(senderId);
-                    responseText = "Вы приняли согласие, теперь можете использовать бота!";
+                    responseText = "Вы дали согласие на обработку персональных данных, можете пользоваться ботом!";
                     keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
                     break;
 
                 case "decline_agreement":
                     responseText = "Без согласия, пользоваться ботом невозможно! " +
-                        "Вернитесь в начало";
+                        "Вернитесь в начало!";
                     keyboard = MainKeyboard.GetBackToAgreementKeyboard(); 
                     break;
 
@@ -59,13 +59,23 @@ namespace Autouchet_Bot.Handlers
                     break;
 
                 case "help_about_app":
-                    responseText = "Что такое автоучёт? \n Это приложение, которое " +
-                        "упрощает жизнь самозанятым";
+                    responseText = "**Что такое автоучёт?** \n Это приложение, которое " +
+                        "упрощает жизнь самозанятым, помогает создавать чеки" +
+                        "и отправляет отчётность в налоговую";
                     keyboard = MainKeyboard.GetHelpMenu();
                     break;
 
                 case "help_self_employed":
-                    responseText = "Что такое самозанятость? \n Это налоговоый режим";
+                    responseText = "**Что такое самозанятость?** \n Это специальный налоговый режим \n" 
+                        + "для граждан, которые работают на себя."
+                        + "\n **Условия самозанятости**: \n 1. Доход не больше 2.4 млн. рублей в год \n " +
+                        "2. Нельзя нанимать сотрудников по друдовым договорам \n" +
+                        "3. Можно продавать только только товары собственного" +
+                        " производства или оказывать услуги \n "+
+                        "*Налоговые ставки* \n" +
+                        "4% - при работе с физическоми лицами\n" +
+                        "6% - при работе с юридическими лицами и индивидуальными предпринимателями";
+                        
                     keyboard = MainKeyboard.GetHelpMenu();
                     break;
 
@@ -75,7 +85,7 @@ namespace Autouchet_Bot.Handlers
                     break;
 
                 case "help_back":
-                    responseText = "Главное меню:";
+                    responseText = "*Главное меню*";
                     keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
                     break;
 
