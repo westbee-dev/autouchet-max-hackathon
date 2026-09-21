@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/export_page.css">
+    <title>Экспорт отчета</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Экспорт отчета</span>
+        </header>
+
+        <main>
+            <form class="export_form" id="export-form">
+                <p class="export_description">В отчет попадут оплаченные и вручную зафиксированные чеки за выбранный квартал</p>
+
+                <div class="quarter_list">
+                    <div class="rope_line"></div>
+
+                    <label class="quarter_item">
+                        <span class="quarter_item_label">3 квартал 2026</span>
+                        <input type="radio" name="quarter" value="q3-2026" class="quarter_item_radio" checked>
+                        <span class="quarter_item_circle"></span>
+                    </label>
+
+                    <div class="rope_line"></div>
+
+                    <label class="quarter_item">
+                        <span class="quarter_item_label">2 квартал 2026</span>
+                        <input type="radio" name="quarter" value="q2-2026" class="quarter_item_radio">
+                        <span class="quarter_item_circle"></span>
+                    </label>
+
+                    <div class="rope_line"></div>
+
+                    <label class="quarter_item">
+                        <span class="quarter_item_label">1 квартал 2026</span>
+                        <input type="radio" name="quarter" value="q1-2026" class="quarter_item_radio">
+                        <span class="quarter_item_circle"></span>
+                    </label>
+
+                    <div class="rope_line"></div>
+
+                    <label class="quarter_item">
+                        <span class="quarter_item_label">4 квартал 2026</span>
+                        <input type="radio" name="quarter" value="q4-2026" class="quarter_item_radio">
+                        <span class="quarter_item_circle"></span>
+                    </label>
+                </div>
+            </form>
+        </main>
+
+        <footer class="export_footer">
+            <button type="submit" form="export-form" class="button">Сформировать</button>
+        </footer>
+    </div>
+</body>
+</html>
