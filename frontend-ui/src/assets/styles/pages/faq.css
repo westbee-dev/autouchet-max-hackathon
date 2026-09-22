@@ -44,3 +44,21 @@
     color: #86868b;
     font-size: 13px;
 }
+
+.faq_answer_wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+}
+
+.faq_item[open] .faq_answer_wrapper {
+    grid-template-rows: 1fr;
+}
+
+.faq_answer {
+    overflow: hidden;
+    margin: 0 25px 18px 10px;
+    font-family: 'SF Pro Display-Light', sans-serif, Arial;
+    color: #86868b;
+    font-size: 13px;
+}

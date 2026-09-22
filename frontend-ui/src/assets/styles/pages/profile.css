@@ -87,6 +87,26 @@
     overflow-y: auto;
 }
 
+.activity_item_actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.activity_item_up {
+    background: none;
+    border: none;
+    color: #8f8f93;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.activity_item_up:active {
+    opacity: 0.6;
+}
+
 .activity_item {
     display: flex;
     align-items: center;

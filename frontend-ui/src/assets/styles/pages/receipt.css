@@ -4,11 +4,6 @@
     margin: 0 0 0 5px;
 }
 
-.description {
-    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
-    font-size: 15px;
-}
-
 .receipt_form {
     display: flex;
     flex-direction: column;
@@ -87,6 +82,33 @@
     box-shadow: 0 0 0 1px #142b2333;
 }
 
+/* календарь в том же стиле, что и поле суммы */
+.amount_input[type="date"] {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    padding: 0 15px;
+}
+
+.amount_input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.45;
+}
+
+.amount_input[type="date"]::-webkit-datetime-edit {
+    padding: 0;
+}
+
+.customer_type_hint {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #8f8f93;
+    background-color: #ffffff;
+    border-radius: 9px;
+    padding: 10px 12px;
+    margin: 6px 0 0 0;
+}
+
 .arrow_fix {
     position: relative;
 }
@@ -144,4 +166,10 @@
 .button_legal {
     color:#1f1f1f;
     background-color: #ffffff;
+}
+
+.button--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
 }

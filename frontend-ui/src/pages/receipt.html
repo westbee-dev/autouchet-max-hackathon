@@ -23,15 +23,17 @@
 
                     <div class="customer_type_toggle">
                         <div class="customer_case">
-                            <input type="radio" name="customer_type" id="type_individual" value="individual" class="toggle_input description" checked>
+                            <input type="radio" name="customer_type" id="type_individual" value="individual" class="toggle_input" checked>
                             <label for="type_individual" class="toggle_title">Физическое лицо</label>
                         </div>
                         
                         <div class="customer_case">
-                            <input type="radio" name="customer_type" id="type_legal" value="legal" class="toggle_input description">
+                            <input type="radio" name="customer_type" id="type_legal" value="legal" class="toggle_input">
                             <label for="type_legal" class="toggle_title">Юридическое лицо</label>
                         </div>
                     </div>
+
+                    <span class="customer_type_hint" id="legal_hint" hidden>Для юр. лиц оплата через ссылку пока не поддерживается - зафиксируйте чек вручную, когда получите деньги («Зафиксировать оплату»)</span>
                 </div>
 
                 <div class="receipt_info">
@@ -39,16 +41,16 @@
                     <input type="number" inputmode="numeric" name="amount" id="amount" class="amount_input" placeholder="0" min="0">
                 </div>
 
+                <div class="receipt_info">
+                    <label for="paid_date" class="header_txt">Дата оплаты</label>
+                    <input type="date" name="paid_date" id="paid_date" class="amount_input">
+                </div>
+
                 <div class="receipt_info arrow_fix">
                     <label for="activity" class="header_txt">Вид деятельности</label>
-                    <select name="activity" id="activity" class="activity_select">
-                        <option value="1 option">Видеомонтаж</option>
-                        <option value="2 option">Репетиторство по английскому</option>
-                        <option value="3 option">Массаж</option>
-                    </select>
+                    <select name="activity" id="activity" class="activity_select"></select>
                 </div>
             </form>
-            <!-- Реализовать, что для юр лиц нельзя формировать чеки на оплату -->
         </main>
 
         <footer class="receipt_footer">
@@ -56,5 +58,8 @@
             <button type="button" class="button button_legal" id="fix_paid">Зафиксировать оплату</button>
         </footer>
     </div>
+
+    <script src="../assets/scripts/storage.js" defer></script>
+    <script src="../assets/scripts/receipt.js" defer></script>
 </body>
 </html>

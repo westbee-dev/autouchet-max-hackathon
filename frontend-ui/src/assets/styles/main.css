@@ -38,6 +38,10 @@ a {
     text-decoration: none;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 body {
     background-color: #f4f6f4;
 }
