@@ -2,7 +2,7 @@
 {
     public class RobokassaWebhookDto
     {
-        public decimal OutSumm { get; set; }
+        public decimal OutSum { get; set; }
         public string InvoiceId { get; set; }
     }
 }

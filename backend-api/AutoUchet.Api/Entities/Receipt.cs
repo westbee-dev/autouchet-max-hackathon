@@ -13,6 +13,7 @@ namespace AutoUchet.Api.Entities
         public string PaymentType { get; set; } = "Auto";
         public string? RobokassaInvoiceId { get; set; }
         public string? MockFnsUrl { get; set; }
+        public DateTime? PaidAt { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [JsonIgnore]

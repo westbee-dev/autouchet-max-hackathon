@@ -17,8 +17,11 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<DashboardResponseDto> GetDashboard()
+        public async Task<ActionResult<DashboardResponseDto>> GetDashboard([FromQuery] long maxUserId)
         {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+            if (user == null) return NotFound();
+
             var nowDate = DateTime.UtcNow;
             var deadlineDate = CreateDeadlineDate(nowDate);
             var taxDate = nowDate.AddMonths(-1);
@@ -32,16 +35,18 @@ namespace AutoUchet.Api.Controllers
 
             var totalIncomeMonth = await _context.Receipts
                 .Where(
-                r => r.CreatedAt.Month == taxDate.Month &&
+                r => r.UserId == user.Id &&
+                r.CreatedAt.Month == taxDate.Month &&
                 r.CreatedAt.Year == taxDate.Year && 
                 r.Status == "Paid")
-                .SumAsync(r =>  r.Amount);
+                .SumAsync(r => r.Amount);
 
-            var taxAmount = totalIncomeMonth * 0.04m;
+            var taxAmount = totalIncomeMonth * user.TaxRate;
 
             var totalIncomeYear = await _context.Receipts
                 .Where(
-                r => r.Status == "Paid" &&
+                r => r.UserId == user.Id &&
+                r.Status == "Paid" &&
                 r.CreatedAt.Year == nowDate.Year)
                 .SumAsync(r => r.Amount);
 
@@ -51,14 +56,14 @@ namespace AutoUchet.Api.Controllers
             var taxPeriodText = $"К уплате за {taxMonth}";
             var deadlineText = $"до {deadlineDate:dd.MM}";
 
-            return new DashboardResponseDto
+            return Ok(new DashboardResponseDto
             {
                 TaxPeriodText = taxPeriodText,
                 TaxAmount = taxAmount,
                 DeadlineText = deadlineText,
                 TotalIncomeYear = totalIncomeYear,
                 LimitPercent = limitPercent
-            };
+            });
         }
 
         private static DateTime CreateDeadlineDate(DateTime nowDate)

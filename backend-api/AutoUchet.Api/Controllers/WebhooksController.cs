@@ -7,11 +7,11 @@ namespace AutoUchet.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class WebhookController : ControllerBase
+    public class WebhooksController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public WebhookController(AppDbContext context)
+        public WebhooksController(AppDbContext context)
         {
             _context = context;
         }
@@ -36,6 +36,7 @@ namespace AutoUchet.Api.Controllers
             }
 
             receipt.Status = "Paid";
+            receipt.PaidAt = DateTime.UtcNow;
             receipt.MockFnsUrl = Services.MockServices.CreateMockFnsUrl();
             await _context.SaveChangesAsync();
 
