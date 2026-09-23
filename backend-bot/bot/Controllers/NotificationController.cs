@@ -1,5 +1,4 @@
-using Autouchet_Bot.Controllers.Models;
-using MAX.Bot;
+using Autouchet_Bot.Services;
 using MAX.Bot.Interfaces;
 using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request.Message;
@@ -14,36 +13,62 @@ namespace Autouchet_Bot.Controllers
     public class NotificationController : ControllerBase
     {
         private readonly IMaxBotClient _botClient;
+        private readonly BackendApiClient _apiClient;
 
-        public NotificationController(IMaxBotClient botClient)
+        public NotificationController(IMaxBotClient botClient, BackendApiClient apiClient)
         {
             _botClient = botClient;
+            _apiClient = apiClient;
         }
 
-        /// POST: api/notification/send
-        [HttpPost("send")]
-        public async Task<IActionResult> SendNotification([FromBody] SendNotificationDto dto)
+        
+        [HttpPost("send-tax-reminders")]
+        public async Task<IActionResult> SendTaxReminders([FromQuery] bool forceSend = false)
         {
-            if (dto.MaxUserId <= 0)
+            DateTime today = DateTime.Today;
+
+            if (!forceSend && !TaxDeadlineChecker.IsInTaxNotificationPeriod(today))
             {
-                return BadRequest(new { success = false, error = "Неверный MaxUserId" });
+                return Ok(new
+                {
+                    success = true,
+                    message = $"Сегодня ({today:dd.MM.yyyy}) не входит в период оповещения о налогах (с 25 по {TaxDeadlineChecker.GetTaxDeadline(today):dd.MM.yyyy})."
+                });
             }
 
             try
             {
-                // Формируем текст уведомления для пользователя
-                string messageText = $"✅ **Оплата успешно получена!**\n\n" +
-                                     $"💳 **Сумма:** {dto.Amount} руб.\n" +
-                                     $"📝 **Назначение:** {dto.Purpose}";
+                var taxSummaries = await _apiClient.GetTaxSummaryAsync();
 
-                await _botClient.SendMessageAsync(new SendMessageRequest
+                if (taxSummaries == null || taxSummaries.Count == 0)
                 {
-                    ChatId = dto.MaxUserId,
-                    Text = messageText,
-                    Format = MessageFormat.Markdown
-                });
+                    return Ok(new { success = true, message = "Нет активных начислений по налогам." });
+                }
 
-                return Ok(new { success = true, message = "Уведомление отправлено" });
+                DateTime deadline = TaxDeadlineChecker.GetTaxDeadline(today);
+                int sentCount = 0;
+
+                foreach (var item in taxSummaries)
+                {
+                    if (item.MaxUserId > 0 && item.TaxAmount > 0)
+                    {
+                        string messageText = $" **Напоминание об уплате налога!**\n\n" +
+                                             $"Сумма к уплате: **{item.TaxAmount:N2} руб.**\n" +
+                                             $"Крайний срок уплаты: **{deadline:dd.MM.yyyy}**.\n\n" +
+                                             $"Пожалуйста, оплатите налог вовремя, чтобы избежать начисления пени.";
+
+                        await _botClient.SendMessageAsync(new SendMessageRequest
+                        {
+                            UserId = item.MaxUserId,
+                            Text = messageText,
+                            Format = MessageFormat.Markdown
+                        });
+
+                        sentCount++;
+                    }
+                }
+
+                return Ok(new { success = true, sentReminders = sentCount, deadline = deadline.ToString("yyyy-MM-dd") });
             }
             catch (Exception ex)
             {
