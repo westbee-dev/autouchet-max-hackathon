@@ -47,24 +47,35 @@ namespace Autouchet_Bot.Controllers
 
                 DateTime deadline = TaxDeadlineChecker.GetTaxDeadline(today);
                 int sentCount = 0;
+                int failedCount = 0;
 
                 foreach (var item in taxSummaries)
                 {
                     if (item.MaxUserId > 0 && item.TaxAmount > 0)
                     {
-                        string messageText = $" **Напоминание об уплате налога!**\n\n" +
-                                             $"Сумма к уплате: **{item.TaxAmount:N2} руб.**\n" +
-                                             $"Крайний срок уплаты: **{deadline:dd.MM.yyyy}**.\n\n" +
-                                             $"Пожалуйста, оплатите налог вовремя, чтобы избежать начисления пени.";
-
-                        await _botClient.SendMessageAsync(new SendMessageRequest
+                        try
                         {
-                            UserId = item.MaxUserId,
-                            Text = messageText,
-                            Format = MessageFormat.Markdown
-                        });
 
-                        sentCount++;
+
+                            string messageText = $" **Напоминание об уплате налога!**\n\n" +
+                                                 $"Сумма к уплате: **{item.TaxAmount:N2} руб.**\n" +
+                                                 $"Крайний срок уплаты: **{deadline:dd.MM.yyyy}**.\n\n" +
+                                                 $"Пожалуйста, оплатите налог вовремя, чтобы избежать начисления пени.";
+
+                            await _botClient.SendMessageAsync(new SendMessageRequest
+                            {
+                                UserId = item.MaxUserId,
+                                Text = messageText,
+                                Format = MessageFormat.Markdown
+                            });
+
+                            sentCount++;
+                        }
+                        catch (Exception ex)
+                        {
+                            failedCount++;
+                            Console.WriteLine($"[Warning] Пропуск MaxUserId={item.MaxUserId}: {ex.Message}");
+                        }
                     }
                 }
 
