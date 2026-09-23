@@ -13,10 +13,12 @@ namespace Autouchet_Bot.Handlers
     public class CallbackHandler
     {
         private readonly string _miniAppUrl;
+        private readonly BackendApiClient _apiClient;
 
-        public CallbackHandler(string miniAppUrl)
+        public CallbackHandler(string miniAppUrl, BackendApiClient apiClient)
         {
             _miniAppUrl = miniAppUrl;
+            _apiClient = apiClient;
         }
 
         public async Task HandleAsync(MessageCallbackUpdate callbackUpdate, MaxBotClient client)
@@ -30,6 +32,7 @@ namespace Autouchet_Bot.Handlers
             string payload = callback.Payload;
             string responseText = string.Empty;
             long senderId = callback.User.Id;
+            string firstName = callback.User.FirstName;
             Attachment keyboard = null;
 
             switch (payload)
@@ -38,6 +41,7 @@ namespace Autouchet_Bot.Handlers
                     UserService.Accept(senderId);
                     responseText = "Вы дали согласие на обработку персональных данных, можете пользоваться ботом!";
                     keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
+                    await _apiClient.CreateUserAsync(senderId, firstName);
                     break;
 
                 case "decline_agreement":
