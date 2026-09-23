@@ -213,13 +213,13 @@ span {
     gap: 6px;
 }
 
-.empty_history__title {
+.empty_history_title {
     font-family: 'SF Pro Display-Medium', sans-serif, Arial;
     font-size: 14px;
     color: #1f1f1f;
 }
 
-.empty_history__text {
+.empty_history_text {
     font-family: 'SF Pro Display-Regular', sans-serif, Arial;
     font-size: 12px;
     color: #86868b;
