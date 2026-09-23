@@ -28,7 +28,8 @@ class Bot
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllers();
         builder.Services.AddHttpClient<BackendApiClient>();
-        
+        builder.Services.AddHostedService<TaxReminderBackgroundService>();
+
 
         var client = new MaxBotClient(botToken);
 
