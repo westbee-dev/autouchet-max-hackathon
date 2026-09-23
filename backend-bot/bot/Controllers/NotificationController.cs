@@ -1,3 +1,4 @@
+using Autouchet_Bot.Controllers.Models;
 using Autouchet_Bot.Services;
 using MAX.Bot.Interfaces;
 using MAX.Bot.Interfaces.Models;
@@ -88,6 +89,45 @@ namespace Autouchet_Bot.Controllers
                 }
 
                 return Ok(new { success = true, sentReminders = sentCount, deadline = deadline.ToString("yyyy-MM-dd") });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, error = ex.Message });
+            }
+        }
+        [HttpPost("payment-success")]
+        public async Task<IActionResult> PaymentSuccess([FromBody] PaymentSuccessDto dto)
+        {
+            if (dto.MaxUserId <= 0)
+            {
+                return BadRequest(new { success = false, error = "Некорректный MaxUserId." });
+            }
+
+            try
+            {
+                string purposeText = string.IsNullOrEmpty(dto.PurposeOfPayment)
+                    ? "Оплата налога"
+                    : dto.PurposeOfPayment;
+
+                string messageText = $"**Оплата прошла!**\n\n" +
+                                     $"Назначение: **{purposeText}**\n" +
+                                     $"Сумма: **{dto.Amount:N2} руб.**\n";
+
+                if (!string.IsNullOrEmpty(dto.InvoiceId))
+                {
+                    messageText += $"🧾 Номер чека/транзакции: `{dto.InvoiceId}`\n";
+                }
+
+                messageText += "\nДанные обновлены в системе.";
+
+                await _botClient.SendMessageAsync(new SendMessageRequest
+                {
+                    UserId = dto.MaxUserId,
+                    Text = messageText,
+                    Format = MessageFormat.Markdown
+                });
+
+                return Ok(new { success = true, message = "Уведомление об успешной оплате отправлено." });
             }
             catch (Exception ex)
             {
