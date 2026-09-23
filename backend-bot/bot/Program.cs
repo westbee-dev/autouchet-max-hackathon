@@ -31,18 +31,17 @@ class Bot
         
 
         var client = new MaxBotClient(botToken);
-        var messageHandler = new MessageHandler(miniAppUrl);
-        var callbackHandler = new CallbackHandler(miniAppUrl);
 
-        builder.Services.AddSingleton<IMaxBotClient>(client);
-        builder.Services.AddSingleton(messageHandler);
-        builder.Services.AddSingleton(callbackHandler);
+        builder.Services.AddSingleton<IMaxBotClient>(client);    
 
         builder.Services.AddSingleton(sp => new MessageHandler(miniAppUrl));
         builder.Services.AddSingleton(sp =>
             new CallbackHandler(miniAppUrl, sp.GetRequiredService<BackendApiClient>()));
 
         var app = builder.Build();
+        app.MapControllers();
+        var messageHandler = app.Services.GetRequiredService<MessageHandler>();
+        var callbackHandler = app.Services.GetRequiredService<CallbackHandler>();
 
         var botInfo = await client.GetMeAsync();
         Console.WriteLine($"Бот запущен: {botInfo.FirstName} (ID: {botInfo.Id})");
