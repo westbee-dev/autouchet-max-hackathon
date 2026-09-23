@@ -1,5 +1,6 @@
 ﻿using Autouchet_Bot.Handlers;
 using Autouchet_Bot.Keyboards;
+using Autouchet_Bot.Services;
 using DotNetEnv;
 using MAX.Bot;
 using MAX.Bot.Interfaces;
@@ -26,6 +27,8 @@ class Bot
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Services.AddControllers();
+        builder.Services.AddHttpClient<BackendApiClient>();
+        
 
         var client = new MaxBotClient(botToken);
         var messageHandler = new MessageHandler(miniAppUrl);
@@ -34,6 +37,10 @@ class Bot
         builder.Services.AddSingleton<IMaxBotClient>(client);
         builder.Services.AddSingleton(messageHandler);
         builder.Services.AddSingleton(callbackHandler);
+
+        builder.Services.AddSingleton(sp => new MessageHandler(miniAppUrl));
+        builder.Services.AddSingleton(sp =>
+            new CallbackHandler(miniAppUrl, sp.GetRequiredService<BackendApiClient>()));
 
         var app = builder.Build();
 
