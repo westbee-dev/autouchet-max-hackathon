@@ -26,6 +26,7 @@ namespace Autouchet_Bot.Controllers
         public async Task<IActionResult> SendTaxReminders([FromQuery] bool forceSend = false)
         {
             DateTime today = DateTime.Today;
+            var (shouldSend, daysLeft) = TaxDeadlineChecker.CheckNotificationTrigger(today);
 
             if (!forceSend && !TaxDeadlineChecker.IsInTaxNotificationPeriod(today))
             {
@@ -48,6 +49,13 @@ namespace Autouchet_Bot.Controllers
                 DateTime deadline = TaxDeadlineChecker.GetTaxDeadline(today);
                 int sentCount = 0;
                 int failedCount = 0;
+
+                string reminderHeader = daysLeft switch
+                {
+                    1 => "Завтра крайний срок уплаты налога!**",
+                    5 => "До уплаты налога осталось 5 дней**",
+                    _ => "**Напоминание об уплате налога!**"
+                };
 
                 foreach (var item in taxSummaries)
                 {

@@ -20,6 +20,19 @@ namespace Autouchet_Bot.Services
             return deadline;
         }
 
+        public static (bool shouldSend, int daysLeft) CheckNotificationTrigger(DateTime date)
+        {
+            DateTime deadline = GetTaxDeadline(date);
+            int daysLeft = (deadline.Date - date.Date).Days;
+
+            if (daysLeft == 5 || daysLeft == 1)
+            {
+                return (true, daysLeft);
+            }
+
+            return (false, daysLeft);
+        }
+
         public static bool IsInTaxNotificationPeriod(DateTime date)
         {
             DateTime startDate = new DateTime(date.Year, date.Month, 25);
