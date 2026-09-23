@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/home.css">
+    <title>ATC</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="profile.html">
+                <img src="../assets/images/avatar.png" alt="Аватар">
+            </a>
+            <span class="header_text">Лента доходов</span>
+            <img src="../assets/images/menu.png" alt="Меню" class="menu" id="menu-open">
+        </header>
+
+        <main>
+            <div class="container_content_amount">
+                <span class="content_amount_head" id="due-month-label">К уплате за август</span>
+                <span class="content_amount_sum" id="due-amount">24&nbsp;&nbsp;400&nbsp;₽</span>
+                <span class="content_amount_text">до 25 сентября</span>
+
+                <div class="content_amount salary">
+                    <span class="content_amount_text">Заработано за 2026 год</span>
+                    <span class="content_amount_sum_income" id="annual-income">1&nbsp;&nbsp;455&nbsp;&nbsp;002&nbsp;₽</span>
+                </div>
+
+                <div class="content_amount limit">
+                    <span class="content_amount_text">Лимит по нпд</span>
+                    <span class="content_amount_text" id="limit-percent">60.6%</span>
+                </div>
+
+                <div class="progress_bar">
+                    <div class="progress_bar_filled" id="progress-bar-filled"></div>
+                </div>
+            </div>
+
+            <div class="container_content_history">
+                <span class="history_title">История чеков</span>
+
+                <div class="items_list" id="items-list"></div>
+
+                <div class="empty_history" id="empty-history" hidden>
+                    <span class="empty_history__title">Здесь пока нет чеков</span>
+                    <span class="empty_history__text">Создайте первый чек вручную или примите оплату</span>
+                </div>
+            </div>
+
+        </main>
+        
+        <a href="receipt.html">
+            <footer class="footer">
+                <span>Новый чек</span>
+            </footer>
+        </a>
+    </div>
+
+    <div class="menu_backdrop" id="menu-backdrop" hidden></div>
+
+    <div class="menu_sheet" id="menu-sheet" aria-hidden="true">
+        <a href="export_page.html" class="menu_sheet_item">
+            <img src="../assets/images/export.png" width="15px" height="15px">Экспорт отчета
+        </a>
+        <a href="settings.html" class="menu_sheet_item">
+            <img src="../assets/images/settings.png" width="15px" height="15px">Настройки
+        </a>
+        <a href="faq.html" class="menu_sheet_item help">
+            <img src="../assets/images/question.png" width="auto" height="15px">
+            <span class="help">Помощь</span>
+        </a>
+    </div>
+
+    <script src="../assets/scripts/storage.js" defer></script>
+    <script src="../assets/scripts/home.js" defer></script>
+    <script src="../assets/scripts/menu.js" defer></script>
+</body>
+</html>

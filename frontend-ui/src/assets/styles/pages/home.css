@@ -1,0 +1,286 @@
+span {
+    display: flex;
+}
+
+.menu {
+    margin: 11px 0 0 156px;
+    cursor: pointer;
+}
+
+.container_content_amount {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    max-width: 295px;
+    max-height: 153px;
+    margin-top: 16px;
+    background-color: #ffffff;
+    border-radius: 17px;
+    box-shadow: 2px 16px 18px 1px rgba(0, 0, 0, 0.09);
+    padding: 11px 17px 0 17px;
+}
+
+.content_amount {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.salary {
+    margin: 20px 0 0 0;
+}
+
+.content_amount_sum_income {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+}
+
+.limit {
+    margin: 10px 0 0 0;
+}
+
+.content_amount_head {
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+    margin: 0 auto;
+}
+
+.content_amount_sum {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 28px;
+}
+
+.content_amount_text {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #86868b;
+    font-size: 11px;
+}
+
+.progress_bar {
+    width: 100%;
+    max-width: 328px;
+    height: 8px;
+    margin: 8px 0 0 0;
+    background-color: #f5f5f7;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0.5px 4px 18px 0.7px rgba(0, 0, 0, 0.24);
+}
+
+.progress_bar_filled {
+    width: 60.6%;
+    height: 100%;
+    background-color: #2f6b45;
+    border-radius: 10px;
+}
+
+.container_content_history {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    max-width: 295px;
+    max-height: 256px;
+    margin: 12px auto;
+    padding: 0px 17px 0 17px;
+}
+
+.items_list {
+    overflow-y: auto;
+    width: 100%;
+    max-width: 295px;
+    height: 255px;
+    padding: 0px 17px 0 0;
+}
+
+.history_title {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #86868b;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.history_item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 14px 0px 14px 0px;
+}
+
+.history_item_title {
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+}
+
+.history_item_data {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0 0 0;
+}
+
+.history_item_info {
+    flex-direction: column;
+}
+
+
+.history_item_tag {
+    font-family: 'SF Pro Display-Light', sans-serif, Arial;
+    color: #86868b;
+    width: 40px;
+    font-size: 9px;
+    background-color: #ededed;
+    border-radius: 7px;
+    padding: 3px 7px;
+    display: flex;
+    justify-content: center;
+}
+
+.history_item_date {
+    font-family: 'SF Pro Display-Light', sans-serif, Arial;
+    color: #8f8f93;
+    font-size: 11px;
+}
+
+.history_item_price {
+    display: flex;
+    flex-direction: column;
+}
+
+.price {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.status {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 10px;
+    border-radius: 7px;
+    width: 69px;
+    padding: 2px 0 3px 0;
+    margin: 2px 0 0 0;
+    display: flex;
+    justify-content: center;
+}
+
+.approved {
+    background-color: #e3efe7;
+    color: #4e7f83;
+}
+
+.remaining {
+    background-color: #fff4e3;
+    color: #c39a5e;
+    animation: processing_pulse 1.6s ease-in-out infinite;
+}
+
+.denied {
+    background-color: #fff6f5;
+    color: #d4746e;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 290px;
+    height: 61px;
+    background-color: #006b41;
+    font-family: 'SF Pro Display-Bold', sans-serif, Arial;
+    color: #ffffff;
+    font-size: 17px;
+    border-radius: 27px;
+    margin: 16px auto 0;
+    box-shadow: inset 0 0 7px 0px rgba(255, 255, 255, 0.51);
+}
+
+.empty_history {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 295px;
+    height: 255px;
+    text-align: center;
+    gap: 6px;
+}
+
+.empty_history__title {
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+    font-size: 14px;
+    color: #1f1f1f;
+}
+
+.empty_history__text {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 12px;
+    color: #86868b;
+    line-height: 1.4;
+    max-width: 220px;
+}
+
+.progress_bar_filled--warning {
+    background-color: #c39a5e;
+}
+
+.progress_bar_filled--danger {
+    background-color: #d4746e;
+}
+
+.menu_backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    z-index: 99;
+    transition: background-color 0.2s ease;
+}
+
+.menu_backdrop--visible {
+    background: rgba(0,0,0,0.3);
+}
+
+.menu_sheet {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 308px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 17px 17px 0 0;
+    z-index: 100;
+    padding: 24px 24px 38px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.10);
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.menu_sheet--open {
+    transform: translateY(0);
+}
+
+.menu_sheet_item {
+    display: flex;
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 15px;
+    color: #1f1f1f;
+    padding: 14px 0;
+    cursor: pointer;
+    width: 100%;
+    gap: 8px;
+}
+
+.help {
+    padding-left: 2px;
+}
