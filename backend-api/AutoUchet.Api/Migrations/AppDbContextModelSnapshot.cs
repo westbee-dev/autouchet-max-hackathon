@@ -43,6 +43,9 @@ namespace AutoUchet.Api.Migrations
                     b.Property<string>("MockFnsUrl")
                         .HasColumnType("text");
 
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("PaymentType")
                         .IsRequired()
                         .HasColumnType("text");
@@ -80,8 +83,15 @@ namespace AutoUchet.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<long>("MaxUserId")
                         .HasColumnType("bigint");
+
+                    b.Property<bool>("RemindAboutTax")
+                        .HasColumnType("boolean");
 
                     b.Property<decimal>("TaxRate")
                         .HasColumnType("numeric");

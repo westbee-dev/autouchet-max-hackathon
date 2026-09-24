@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/paid_expired.css">
+    <title>Чек просрочен</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+        </header>
+
+        <main>
+            <div class="status_content">
+                <div class="expired">
+                    <span class="expired_check">!</span>
+                </div>
+            </div>
+
+            <div class="status_info">
+                <span class="info_header">Ссылка на оплату истекла</span>
+                <span class="desc_header">Доход по этому чеку не учтен. Старый чек останется в истории - можно создать новую ссылку на ту же сумму</span>
+            </div>
+        </main>
+
+        <footer class="new_link_button">
+            <a href="receipt.html">
+                <button type="button" class="button" id="button_link">Создать новую ссылку</button>
+            </a>
+        </footer>
+    </div>
+
+    <script src="../assets/scripts/storage.js" defer></script>
+    <script src="../assets/scripts/paid_expired.js" defer></script>
+</body>
+</html>

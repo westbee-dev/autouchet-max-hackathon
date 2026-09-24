@@ -1,0 +1,92 @@
+.export_form {
+    display: flex;
+    flex-direction: column;
+    padding: 0 17px;
+    margin: 20px 0 0 0;
+}
+
+.export_description {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 13px;
+    color: #8f8f93;
+    line-height: 1.4;
+    margin: 0 0 12px 0;
+}
+
+.quarter_list {
+    display: flex;
+    flex-direction: column;
+}
+
+.quarter_item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 0;
+    cursor: pointer;
+}
+
+.quarter_item_label {
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+    font-size: 14px;
+    color: #1f1f1f;
+}
+
+.quarter_item_radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.quarter_item_circle {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid #c7c7cc;
+    flex-shrink: 0;
+    transition: border-color 0.2s ease;
+}
+
+.quarter_item_circle::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    background-color: #1f6650;
+    transform: scale(0);
+    transition: transform 0.15s ease;
+}
+
+.quarter_item_radio:checked + .quarter_item_circle {
+    border-color: #1f6650;
+}
+
+.quarter_item_radio:checked + .quarter_item_circle::after {
+    transform: scale(1);
+}
+
+.export_footer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 45px auto;
+    width: 100%;
+    max-width: 284px;
+    height: 34px;
+}
+
+.button {
+    width: 100%;
+    background-color: #006b41;
+    border: none;
+    outline: none;
+    border-radius: 17px;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #ffffff;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 12px 0;
+    box-shadow: inset 0 0 7px 0px rgba(255, 255, 255, 0.51);
+}

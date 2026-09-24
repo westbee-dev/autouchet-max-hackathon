@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/styles/main.css">
+    <link rel="stylesheet" href="../assets/styles/pages/profile.css">
+    <title>Профиль</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="home.html">
+                <img src="../assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Профиль</span>
+        </header>
+
+        <main>
+            <div class="profile_info">
+                <img src="../assets/images/avatar_profile.png" alt="Аватар">
+                <span>Андрей Матковский</span>
+            </div>
+
+            <div class="status_id">
+                <span id="status-activity"></span>
+                <span>@whydronchik</span>
+            </div>
+
+            <div class="cases">
+                <div class="case">
+                    <span class="case_number" id="receipts-count"></span>
+                    <span class="case_text">чеков за год</span>
+                </div>
+
+                <div class="case">
+                    <span class="case_number" id="annual-income"></span>
+                    <span class="case_text">доход за год</span>
+                </div>
+            </div>
+
+            <div class="activity_container">
+                <div class="activity">
+                    <span class="activity_title">Мои виды деятельности</span>
+                    <span class="activity_description">Звездочкой отмечен вариант по умолчанию при создании чека. Его можно изменить, выбрав любой другой из списка</span>
+                </div>
+
+                <div class="activity_list" id="activity-list"></div>
+            </div>
+        </main>
+
+        <footer>
+            <form class="activity_form" id="activity-form">
+                <input type="text" class="activity_input" id="new-activity-input" placeholder="Например «Ремонт квартиры»">
+                <button type="submit" class="activity_add_btn">Добавить деятельность</button>
+            </form>
+        </footer>
+    </div>
+
+    <script src="../assets/scripts/storage.js" defer></script>
+    <script src="../assets/scripts/profile.js" defer></script>
+</body>
+</html>
