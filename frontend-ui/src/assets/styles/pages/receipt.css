@@ -22,7 +22,8 @@
     display: flex;
     background-color: #ffffff;
     width: 100%;
-    max-width: 338px;
+    max-width: 329px;
+    box-sizing: border-box;
     height: 31px;
     border-radius: 9px;
 }
@@ -63,7 +64,8 @@
     background-color: #ffffff;
     font-size: 16px;
     width: 100%;
-    max-width: 313px;
+    max-width: 329px;
+    box-sizing: border-box;
     height: 44px;
     border-radius: 9px;
     border: none;
@@ -82,7 +84,6 @@
     box-shadow: 0 0 0 1px #142b2333;
 }
 
-/* календарь в том же стиле, что и поле суммы */
 .amount_input[type="date"] {
     font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
     color: #1f1f1f;
@@ -119,7 +120,8 @@
     font-size: 13px;
     background-color: #ffffff;
     width: 100%;
-    max-width: 338px;
+    max-width: 329px;
+    box-sizing: border-box;
     height: 36px;
     padding: 0 40px 0 15px;
     border: none;

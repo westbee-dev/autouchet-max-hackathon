@@ -1,6 +1,16 @@
 (function () {
     'use strict';
 
+    function renderStatusActivity() {
+        var el = document.getElementById('status-activity');
+        if (!el) return;
+
+        var activities = Atc.getActivities();
+        var current = activities.filter(function (a) { return a.isDefault; })[0] || activities[0];
+
+        el.textContent = current ? 'Самозанятый · ' + current.name : 'Самозанятый';
+    }
+
     function renderStats() {
         var receipts = Atc.getReceipts().filter(function (r) {
             return r.status === 'paid' || r.status === 'manual_recorded';
@@ -10,6 +20,8 @@
     }
 
     function renderActivities() {
+        renderStatusActivity();
+
         var list = document.getElementById('activity-list');
         var activities = Atc.getActivities();
         list.innerHTML = '';
