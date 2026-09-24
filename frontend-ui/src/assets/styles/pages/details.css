@@ -1,0 +1,133 @@
+.container_info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-size: 11px;
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    width: 284px;
+    height: 212px;
+    background-color: #ffffff;
+    margin: 27px auto;
+    color:#86868b;
+    gap: 20px;
+    border-radius: 13px;
+    box-shadow: 2px 16px 18px 1px rgba(0, 0, 0, 0.09);
+}
+
+.items {
+    display: flex;
+    align-items: baseline;
+    white-space: nowrap;
+    margin: 0 10px;
+}
+
+.txt {
+    flex-shrink: 0;
+}
+
+.dots {
+    flex: 1;
+    overflow: hidden;
+    margin: 0 7px;
+    align-self: center;
+    border-bottom: 1px dotted #c7c7cc;
+}
+
+.numbers {
+    color: #1d1d1f;
+    flex-shrink: 0;
+    font-family: 'SF Pro Display-Medium', sans-serif, Arial;
+}
+
+.link_button {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+    margin: 15px auto;
+    width: 100%;
+    max-width: 284px;
+    height: auto;
+}
+
+.button {
+    border: none;
+    outline: none;
+    border-radius: 9px;
+    background-color: #ffffff;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+.button_danger {
+    color: #d4746e;
+}
+
+.button_ghost {
+    color: #1f1f1f;
+    border: 1px solid #ededed;
+}
+
+.confirm_backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 99;
+    transition: background-color 0.2s ease;
+}
+
+.confirm_backdrop--visible {
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.confirm {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 329px;
+    margin: 0 auto;
+    z-index: 100;
+    padding: 24px 24px 38px;
+    border-radius: 17px 17px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
+    border-top: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.10);
+}
+
+.confirm--open {
+    transform: translateY(0);
+}
+
+.confirm_title {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    font-size: 17px;
+    color: #1f1f1f;
+}
+
+.confirm_text {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #86868b;
+    margin-bottom: 8px;
+}
+
+.confirm_actions {
+    display: flex;
+    gap: 8px;
+}
+
+.confirm_actions .button {
+    flex: 1;
+}
