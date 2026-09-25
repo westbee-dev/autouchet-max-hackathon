@@ -1,12 +1,6 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Autouchet_Bot.Services;
+﻿using MAX.Bot.Exceptions;
 using MAX.Bot.Interfaces;
-using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request.Message;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Autouchet_Bot.Services
 {
@@ -45,17 +39,27 @@ namespace Autouchet_Bot.Services
                         {
                             if (item.MaxUserId > 0 && item.TaxAmount > 0)
                             {
-                                string messageText = $"⏰ **Напоминание об уплате налога!**\n\n" +
-                                                     $"Сумма к уплате: **{item.TaxAmount:N2} руб.**\n" +
-                                                     $"Крайний срок уплаты: **{deadline:dd.MM.yyyy}**.\n\n" +
-                                                     $"Пожалуйста, оплатите налог вовремя.";
-
-                                await _botClient.SendMessageAsync(new SendMessageRequest
+                                try
                                 {
-                                    UserId = item.MaxUserId,
-                                    Text = messageText,
-                                    Format = MessageFormat.Markdown
-                                });
+                                    string messageText = $"⏰ **Напоминание об уплате налога!**\n\n" +
+                                                         $"Сумма к уплате: **{item.TaxAmount:N2} руб.**\n" +
+                                                         $"Крайний срок уплаты: **{deadline:dd.MM.yyyy}**.\n\n" +
+                                                         $"Пожалуйста, оплатите налог вовремя.";
+
+                                    await _botClient.SendMessageAsync(new SendMessageRequest
+                                    {
+                                        UserId = item.MaxUserId,
+                                        Text = messageText,
+                                        Format = MessageFormat.Markdown
+                                    });
+                                }
+
+                                catch (MaxBotClientException ex) when (ex.Message.Contains("dialog.not.found"))
+                                {
+                                    Console.WriteLine($"Пользователь {item.MaxUserId} не открывал чат с ботом.");
+                                }
+                                
+                                   
                             }
                         }
                     }
