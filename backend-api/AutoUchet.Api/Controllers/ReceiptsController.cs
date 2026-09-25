@@ -184,5 +184,21 @@ namespace AutoUchet.Api.Controllers
 
             return StatusCode(StatusCodes.Status201Created, response);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteReceipt
+            (int id, [FromQuery] long maxUserId)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+            if (user == null) return NotFound();
+
+            var deletedReceipt = await _context.Receipts.FirstOrDefaultAsync(r => r.Id == id && r.UserId == user.Id);
+            if (deletedReceipt == null) return NotFound();
+
+            _context.Receipts.Remove(deletedReceipt);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
     }
 }
