@@ -37,39 +37,17 @@ namespace AutoUchet.Api.Controllers
 
             receipt.Status = "Paid";
             receipt.PaidAt = DateTime.UtcNow;
-            receipt.MockFnsUrl = Services.MockServices.CreateMockFnsUrl();
+            receipt.MockFnsUrl = Services.GeneratorMockUrl.CreateMockFnsUrl();
             await _context.SaveChangesAsync();
 
-            try
+            await Services.NotificationHelper.SendAsync(new
             {
-                var botUrl = "http://26.7.68.242:5232/api/Notification/payment-success";
-                var notificationData = new
-                {
-                    maxUserId = receipt.User.MaxUserId,
-                    amount = receipt.Amount,
-                    purposeOfPayment = receipt.PurposeOfPayment,
-                    invoiceId = receipt.RobokassaInvoiceId ?? receipt.MockFnsUrl
-                };
-
-                var json = System.Text.Json.JsonSerializer.Serialize(notificationData);
-                var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-                using var client = new HttpClient();
-                var response = await client.PostAsync(botUrl, content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    Console.WriteLine($"Уведомление боту отправлено успешно. MaxUserId: {receipt.User?.MaxUserId}");
-                }
-                else
-                {
-                    Console.WriteLine($"Ошибка при отправке боту. Статус: {response.StatusCode}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка уведомления бота: {ex.Message}");
-            }
+                maxUserId = receipt.User.MaxUserId,
+                amount = receipt.Amount,
+                purposeOfPayment = receipt.PurposeOfPayment,
+                paymentUrl = receipt.MockFnsUrl,
+                eventType = "receipt_paid_via_webhook"
+            });
 
             return Content("OK");
         }

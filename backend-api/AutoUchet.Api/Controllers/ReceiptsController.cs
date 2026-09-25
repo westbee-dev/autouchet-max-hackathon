@@ -17,8 +17,7 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ReceiptResponseDto>>> GetReceipts
-            ([FromQuery] long maxUserId)
+        public async Task<ActionResult<List<ReceiptResponseDto>>> GetReceipts([FromQuery] long maxUserId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
             if (user == null) return NotFound();
@@ -26,25 +25,24 @@ namespace AutoUchet.Api.Controllers
             var mappedReceipts = await _context.Receipts
                 .Where(r => r.UserId == user.Id)
                 .OrderByDescending(r => r.CreatedAt)
-                .Select(
-                r => new ReceiptResponseDto
+                .Select(r => new ReceiptResponseDto
                 {
                     Id = r.Id,
                     Amount = r.Amount,
                     BuyerType = r.BuyerType,
                     PurposeOfPayment = r.PurposeOfPayment,
                     TaxRate = r.BuyerType == "Физ" ? 0.04m : 0.06m,
-                    Status = r.Status,
+                    Status = Services.ReceiptHelper.GetActualStatus(r.Status, r.CreatedAt),
                     PaymentType = r.PaymentType,
                     CreatedAt = r.CreatedAt,
                     PaidAt = r.PaidAt,
-                    PaymentUrl = r.Status == "WaitingPayment" && r.PaymentType == "Auto"
-                    ? $"https://robokassa.fake/pay?inv={r.RobokassaInvoiceId}"
-                    : r.MockFnsUrl
+                    PaymentUrl = Services.ReceiptHelper.GetActualStatus(r.Status, r.CreatedAt) == "WaitingPayment" && r.PaymentType == "Auto"
+                        ? $"https://robokassa.fake/pay?inv={r.RobokassaInvoiceId}"
+                        : r.MockFnsUrl
                 })
                 .ToListAsync();
 
-            return mappedReceipts;
+            return Ok(mappedReceipts);
         }
 
         [HttpGet("{id}")]
@@ -56,6 +54,8 @@ namespace AutoUchet.Api.Controllers
             var receipt = await _context.Receipts.FirstOrDefaultAsync(r => r.Id == id && r.UserId == user.Id);
             if (receipt == null) return NotFound();
 
+            var actualStatus = Services.ReceiptHelper.GetActualStatus(receipt.Status, receipt.CreatedAt);
+
             var response = new ReceiptResponseDto
             {
                 Id = receipt.Id,
@@ -65,9 +65,9 @@ namespace AutoUchet.Api.Controllers
                 PurposeOfPayment = receipt.PurposeOfPayment,
                 CreatedAt = receipt.CreatedAt,
                 PaidAt = receipt.PaidAt,
-                Status = receipt.Status,
+                Status = actualStatus,
                 PaymentType = receipt.PaymentType,
-                PaymentUrl = receipt.Status == "WaitingPayment"
+                PaymentUrl = actualStatus == "WaitingPayment"
                     ? $"https://robokassa.fake/pay?inv={receipt.RobokassaInvoiceId}"
                     : receipt.MockFnsUrl
             };
@@ -76,8 +76,7 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpGet("export")]
-        public async Task<ActionResult<List<ReceiptResponseDto>>> GetReportForReceipts
-            ([FromQuery] GetReportRequestDto dto)
+        public async Task<ActionResult<List<ReceiptResponseDto>>> GetReportForReceipts([FromQuery] GetReportRequestDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == dto.MaxUserId);
             if (user == null) return NotFound();
@@ -110,8 +109,7 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpPost("send-payment-link")]
-        public async Task<ActionResult<CreateReceiptResponseDto>> CreateReceiptWithPaymentLink
-            ([FromBody] CreateReceiptRequestDto dto)
+        public async Task<ActionResult<CreateReceiptResponseDto>> CreateReceiptWithPaymentLink([FromBody] CreateReceiptRequestDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == dto.MaxUserId);
             if (user == null) return NotFound();
@@ -137,6 +135,16 @@ namespace AutoUchet.Api.Controllers
             _context.Receipts.Add(receipt);
             await _context.SaveChangesAsync();
 
+
+            await Services.NotificationHelper.SendAsync(new
+            {
+                maxUserId = user.MaxUserId,
+                amount = receipt.Amount,
+                purposeOfPayment = receipt.PurposeOfPayment,
+                paymentUrl = paymentUrl,
+                eventType = "receipt_created_waiting"
+            });
+
             var response = new CreateReceiptResponseDto
             {
                 Id = receipt.Id,
@@ -148,12 +156,12 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpPost("mark-as-paid")]
-        public async Task<ActionResult<CreateReceiptResponseDto>> CreateReceiptWithoutPaymentLink
-            ([FromBody] CreateReceiptRequestDto dto)
+        public async Task<ActionResult<CreateReceiptResponseDto>> CreateReceiptWithoutPaymentLink([FromBody] CreateReceiptRequestDto dto)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == dto.MaxUserId);
             if (user == null) return NotFound();
-            var mockFnsUrl = Services.MockServices.CreateMockFnsUrl();
+
+            var mockFnsUrl = Services.GeneratorMockUrl.CreateMockFnsUrl();
 
             var receipt = new Receipt
             {
@@ -174,6 +182,15 @@ namespace AutoUchet.Api.Controllers
             _context.Receipts.Add(receipt);
             await _context.SaveChangesAsync();
 
+            await Services.NotificationHelper.SendAsync(new
+            {
+                maxUserId = user.MaxUserId,
+                amount = receipt.Amount,
+                purposeOfPayment = receipt.PurposeOfPayment,
+                paymentUrl = mockFnsUrl,
+                eventType = "receipt_created_paid"
+            });
+
             var response = new CreateReceiptResponseDto
             {
                 Id = receipt.Id,
@@ -186,8 +203,7 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteReceipt
-            (int id, [FromQuery] long maxUserId)
+        public async Task<ActionResult> DeleteReceipt(int id, [FromQuery] long maxUserId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
             if (user == null) return NotFound();

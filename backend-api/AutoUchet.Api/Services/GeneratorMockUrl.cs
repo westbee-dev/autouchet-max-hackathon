@@ -1,6 +1,6 @@
 ﻿namespace AutoUchet.Api.Services
 {
-    public class MockServices
+    public class GeneratorMockUrl
     {
         public static string CreateMockFnsUrl()
         {
