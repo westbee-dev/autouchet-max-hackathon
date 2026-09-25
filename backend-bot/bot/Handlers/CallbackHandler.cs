@@ -89,7 +89,7 @@ namespace Autouchet_Bot.Handlers
                     break;
 
                 case "help_back":
-                    responseText = "*Главное меню*";
+                    responseText = "**Главное меню**";
                     keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
                     break;
 

@@ -114,24 +114,26 @@ namespace Autouchet_Bot.Keyboards
             };
         }
 
-        public static Attachment GetPayButton(string paymentUrl, string buttonText = "Оплатить")
+        public static Attachment GetPayButton(string url, string buttonText)
         {
-            var payLinkButton = new LinkButton
-            {
-                Text = buttonText,
-                Url = paymentUrl
-            };
-
             return new InlineKeyboardAttachment
             {
                 Payload = new InlineKeyboardPayload
                 {
                     Buttons = new List<List<Button>>
-            {
-                new List<Button> { payLinkButton }
-            }
+                {
+                    new List<Button>
+                    {
+                        new LinkButton
+                        {
+                            Text = buttonText,
+                            Url = url
+                        }
+                    }
+                }
                 }
             };
         }
+
     }
 }

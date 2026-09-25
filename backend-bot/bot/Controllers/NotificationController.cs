@@ -1,8 +1,11 @@
 using Autouchet_Bot.Controllers.Models;
+using Autouchet_Bot.Keyboards;
 using Autouchet_Bot.Services;
 using MAX.Bot.Interfaces;
 using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request.Message;
+using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
+using MAX.Bot.Interfaces.Models.Request.Message.Attachment.Payloads;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -22,7 +25,6 @@ namespace Autouchet_Bot.Controllers
             _apiClient = apiClient;
         }
 
-        
         [HttpPost("send-tax-reminders")]
         public async Task<IActionResult> SendTaxReminders([FromQuery] bool forceSend = false)
         {
@@ -64,8 +66,6 @@ namespace Autouchet_Bot.Controllers
                     {
                         try
                         {
-
-
                             string messageText = $" **Напоминание об уплате налога!**\n\n" +
                                                  $"Сумма к уплате: **{item.TaxAmount:N2} руб.**\n" +
                                                  $"Крайний срок уплаты: **{deadline:dd.MM.yyyy}**.\n\n" +
@@ -103,46 +103,96 @@ namespace Autouchet_Bot.Controllers
                 return BadRequest(new { success = false, error = "Некорректный MaxUserId." });
             }
 
+            string purposeText = string.IsNullOrEmpty(dto.PurposeOfPayment)
+                ? "Оплата налога"
+                : dto.PurposeOfPayment;
+
+            string messageText;
+            string buttonText;
+
+            switch (dto.EventType)
+            {
+                case "receipt_created_waiting":
+                    messageText = $"**Чек создан.**\n" +
+                                  $"Сумма: **{dto.Amount:N2} руб.**\n" +
+                                  $"Назначение: {purposeText}.";
+                    buttonText = "Оплатить";
+                    break;
+
+                case "receipt_created_paid":
+                case "receipt_paid_via_webhook":
+                    messageText = $"**Оплата прошла успешно!**\n" +
+                                  $"Сумма: **{dto.Amount:N2} руб.**\n" +
+                                  $"Назначение: {purposeText}.";
+                    buttonText = "Посмотреть чек";
+                    break;
+
+                default:
+                    messageText = $"**Уведомление по чеку.**\n" +
+                                  $"Сумма: **{dto.Amount:N2} руб.**\n" +
+                                  $"Назначение: {purposeText}.";
+                    buttonText = "Перейти";
+                    break;
+            }
+
+            if (!string.IsNullOrWhiteSpace(dto.PaymentUrl))
+            {
+                try
+                {
+                    var inlineKeyboard = new InlineKeyboardAttachment
+                    {
+                        Payload = new InlineKeyboardPayload
+                        {
+                            Buttons = new List<List<Button>>
+                    {
+                        new List<Button>
+                        {
+                            new LinkButton
+                            {
+                                Text = buttonText,
+                                Url = dto.PaymentUrl
+                            }
+                        }
+                    }
+                        }
+                    };
+
+                    await _botClient.SendMessageAsync(new SendMessageRequest
+                    {
+                        UserId = dto.MaxUserId,
+                        Text = messageText,
+                        Format = MessageFormat.Markdown,
+                        Attachments = new List<Attachment> { inlineKeyboard }
+                    });
+
+                    return Ok(new { success = true, message = "Кнопка оплаты отправлена" });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{dto.PaymentUrl}). Ошибка: {ex.Message}");
+                }
+            }
+
+
             try
             {
-                string purposeText = string.IsNullOrEmpty(dto.PurposeOfPayment)
-                    ? "Оплата налога"
-                    : dto.PurposeOfPayment;
-
-                string messageText = dto.EventType switch
-                {
-                    "receipt_created_waiting" =>
-                        $"**Чек создан.** \n " +
-                        $"Сумма: {dto.Amount:N2} руб. \n " +
-                        $"Назначение: {purposeText}. \n" +
-                        $"[Оплатить]({dto.PaymentUrl})",
-
-                    "receipt_created_paid" =>
-                        $"**Чек успешно создан и оплачен.** \n" +
-                        $"Сумма: {dto.Amount:N2} руб. \n" +
-                        $"Назначение: {purposeText}. \n" +
-                        $"[Чек]({dto.PaymentUrl})",
-
-                    "receipt_paid_via_webhook" =>
-                        $"**Оплата прошла успешно!** \n" +
-                        $"Сумма: {dto.Amount:N2} руб. \n" +
-                        $"Назначение: {purposeText}. \n" +
-                        $"[Чек]({dto.PaymentUrl})",
-
-                    _ => BuildDefaultMessage(purposeText, dto.Amount, dto.InvoiceId)
-                };
+                string fullText = string.IsNullOrWhiteSpace(dto.PaymentUrl)
+                    ? messageText
+                    : $"{messageText}\n\nЧек: {dto.PaymentUrl}";
 
                 await _botClient.SendMessageAsync(new SendMessageRequest
                 {
                     UserId = dto.MaxUserId,
-                    Text = messageText,
-                    Format = MessageFormat.Markdown
+                    Text = fullText,
+                    Format = MessageFormat.Markdown,
+                    Attachments = null
                 });
 
-                return Ok(new { success = true, message = "Уведомление отправлено." });
+                return Ok(new { success = true, message = "Уведомление отправлено" });
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"[MAX API Error] Ошибка отправки: {ex.Message}");
                 return StatusCode(500, new { success = false, error = ex.Message });
             }
         }
