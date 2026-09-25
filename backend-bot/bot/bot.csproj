@@ -11,6 +11,7 @@
   
     <PackageReference Include="DotNetEnv" Version="3.2.0" />
     <PackageReference Include="SaaSoft.MAX.Bot" Version="1.2.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
   
   <ItemGroup>

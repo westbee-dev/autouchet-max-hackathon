@@ -109,16 +109,28 @@ namespace Autouchet_Bot.Controllers
                     ? "Оплата налога"
                     : dto.PurposeOfPayment;
 
-                string messageText = $"**Оплата прошла!**\n\n" +
-                                     $"Назначение: **{purposeText}**\n" +
-                                     $"Сумма: **{dto.Amount:N2} руб.**\n";
-
-                if (!string.IsNullOrEmpty(dto.InvoiceId))
+                string messageText = dto.EventType switch
                 {
-                    messageText += $"🧾 Номер чека/транзакции: `{dto.InvoiceId}`\n";
-                }
+                    "receipt_created_waiting" =>
+                        $"**Чек создан.** \n " +
+                        $"Сумма: {dto.Amount:N2} руб. \n " +
+                        $"Назначение: {purposeText}. \n" +
+                        $"[Оплатить]({dto.PaymentUrl})",
 
-                messageText += "\nДанные обновлены в системе.";
+                    "receipt_created_paid" =>
+                        $"**Чек успешно создан и оплачен.** \n" +
+                        $"Сумма: {dto.Amount:N2} руб. \n" +
+                        $"Назначение: {purposeText}. \n" +
+                        $"[Чек]({dto.PaymentUrl})",
+
+                    "receipt_paid_via_webhook" =>
+                        $"**Оплата прошла успешно!** \n" +
+                        $"Сумма: {dto.Amount:N2} руб. \n" +
+                        $"Назначение: {purposeText}. \n" +
+                        $"[Чек]({dto.PaymentUrl})",
+
+                    _ => BuildDefaultMessage(purposeText, dto.Amount, dto.InvoiceId)
+                };
 
                 await _botClient.SendMessageAsync(new SendMessageRequest
                 {
@@ -127,12 +139,26 @@ namespace Autouchet_Bot.Controllers
                     Format = MessageFormat.Markdown
                 });
 
-                return Ok(new { success = true, message = "Уведомление об успешной оплате отправлено." });
+                return Ok(new { success = true, message = "Уведомление отправлено." });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { success = false, error = ex.Message });
             }
+        }
+
+        private static string BuildDefaultMessage(string purposeText, decimal amount, string? invoiceId)
+        {
+            var messageText = $"**Оплата прошла!**\n\n" +
+                              $"Назначение: **{purposeText}**\n" +
+                              $"Сумма: **{amount:N2} руб.**\n";
+
+            if (!string.IsNullOrEmpty(invoiceId))
+            {
+                messageText += $"🧾 Номер чека/транзакции: `{invoiceId}`\n";
+            }
+
+            return messageText + "\nДанные обновлены в системе.";
         }
     }
 }

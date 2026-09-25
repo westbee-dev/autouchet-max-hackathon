@@ -29,8 +29,9 @@ class Bot
         builder.Services.AddControllers();
         builder.Services.AddHttpClient<BackendApiClient>();
         builder.Services.AddHostedService<TaxReminderBackgroundService>();
-
-
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        
         var client = new MaxBotClient(botToken);
 
         builder.Services.AddSingleton<IMaxBotClient>(client);    
@@ -41,6 +42,11 @@ class Bot
 
         var app = builder.Build();
         app.MapControllers();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
         var messageHandler = app.Services.GetRequiredService<MessageHandler>();
         var callbackHandler = app.Services.GetRequiredService<CallbackHandler>();
 
