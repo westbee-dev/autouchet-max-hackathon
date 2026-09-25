@@ -84,7 +84,7 @@ namespace Autouchet_Bot.Handlers
                     break;
 
                 case "help_support":
-                    responseText = "Если остались вопросы, то пишете на почту `support@autotech.ru`";
+                    responseText = "Если остались вопросы, то пишете на почту **support@autotech.ru**";
                     keyboard = MainKeyboard.GetHelpMenu();
                     break;
 
