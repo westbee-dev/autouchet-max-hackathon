@@ -37,31 +37,18 @@ namespace AutoUchet.Api.Controllers
 
             receipt.Status = "Paid";
             receipt.PaidAt = DateTime.UtcNow;
-            receipt.MockFnsUrl = Services.MockServices.CreateMockFnsUrl();
+            receipt.MockFnsUrl = Services.GeneratorMockUrl.CreateMockFnsUrl();
             await _context.SaveChangesAsync();
 
-            //try 
-            //{
-            //    var botUrl = "https://inclusive-suggestion-weddings-thee.trycloudflare.com/api/notification/send";
-            //    var notificationData = new 
-            //    { 
-            //        maxUserId = receipt.User.MaxUserId, 
-            //        amount = receipt.Amount, 
-            //        purpose = receipt.PurposeOfPayment 
-            //    };
+            await Services.NotificationHelper.SendAsync(new
+            {
+                maxUserId = receipt.User.MaxUserId,
+                amount = receipt.Amount,
+                purposeOfPayment = receipt.PurposeOfPayment,
+                paymentUrl = receipt.MockFnsUrl,
+                eventType = "receipt_paid_via_webhook"
+            });
 
-            //    var json = System.Text.Json.JsonSerializer.Serialize(notificationData);
-            //    var content = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
-
-            //    using var client = new HttpClient();
-            //    await client.PostAsync(botUrl, content);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Console.WriteLine($"Ошибка уведомления бота: {ex.Message}");
-            //}
-
-            Console.WriteLine($"[ЗАГЛУШКА] Уведомление боту для MaxUserId: {receipt.User?.MaxUserId}, Сумма: {receipt.Amount}");
             return Content("OK");
         }
     }

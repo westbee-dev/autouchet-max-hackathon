@@ -5,7 +5,6 @@
         public long MaxUserId { get; set; }
         public string BuyerType { get; set; }
         public decimal Amount { get; set; }
-        public string PurposeOfPayment { get; set; }
-
+        public int ActivityId { get; set; }
     }
 }
