@@ -42,31 +42,43 @@ namespace AutoUchet.Api.Controllers
 
         [HttpGet("profile")]
         public async Task<ActionResult<ProfileDto>> GetUserProfile
-            ([FromQuery] long MaxUserId)
+            ([FromQuery] long maxUserId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == MaxUserId);
+            var user = await _context.Users
+                .Include(u => u.Activities)
+                .FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+
             if (user == null) return NotFound();
 
             var nowDate = DateTime.UtcNow;
 
-            var receiptsForYearList = _context.Receipts
+            var receiptsQuery = _context.Receipts
                 .Where(r => r.UserId == user.Id &&
-                r.Status == "Paid" &&
-                r.CreatedAt.Year == nowDate.Year);
+                            r.Status == "Paid" &&
+                            r.CreatedAt.Year == nowDate.Year);
 
-            var totalIncomeYear = receiptsForYearList.Sum(r => r.Amount);
+            var totalIncomeYear = receiptsQuery.Sum(r => r.Amount);
+            var receiptCountYear = receiptsQuery.Count();
 
-            int receiptCountYear = receiptsForYearList.Count();
+            var activities = user.Activities
+                .OrderByDescending(a => a.IsDefault)
+                .ThenBy(a => a.Id)
+                .Select(a => new ActivityDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    IsDefault = a.IsDefault
+                })
+                .ToList();
 
-            var response = new ProfileDto
+            return Ok(new ProfileDto
             {
                 FirstName = user.FirstName,
                 MaxUserId = user.MaxUserId,
-                ActivityType = user.ActivityType,
+                Activities = activities,
                 ReceiptCountYear = receiptCountYear,
                 TotalIncomeYear = totalIncomeYear
-            };
-            return Ok(response);
+            });
         }
 
         [HttpGet("settings")]
@@ -83,16 +95,26 @@ namespace AutoUchet.Api.Controllers
                 });
         }
 
-        // пока заглушка, создать таблицу в бд нужно, у каждого пользователя может быть много видов активностей
         [HttpGet("activities")]
-        public async Task<ActionResult<List<string>>> GetUserActivities([FromQuery] long maxUserId)
+        public async Task<ActionResult<List<ActivityDto>>> GetUserActivities
+            ([FromQuery] long maxUserId)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+            var user = await _context.Users
+                .Include(u => u.Activities)
+                .FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+
             if (user == null) return NotFound();
 
-            var activities = string.IsNullOrEmpty(user.ActivityType)
-                ? new List<string>()
-                : new List<string> { user.ActivityType };
+            var activities = user.Activities
+                .OrderByDescending(a => a.IsDefault)
+                .ThenBy(a => a.Id)
+                .Select(a => new ActivityDto
+                {
+                    Id = a.Id,
+                    Name = a.Name,
+                    IsDefault = a.IsDefault
+                })
+                .ToList();
 
             return Ok(activities);
         }
@@ -131,17 +153,57 @@ namespace AutoUchet.Api.Controllers
             return StatusCode(StatusCodes.Status201Created, response);
         }
 
-        // пока заглушка, создать таблицу в бд нужно, у каждого пользователя может быть много видов активностей
-        [HttpPut("activity")]
-        public async Task<ActionResult> UpdateUserActivity
-            ([FromQuery] long maxUserId, [FromBody] UpdateActivityDto dto)
+        [HttpPost("activities")]
+        public async Task<ActionResult<ActivityDto>> AddUserActivity
+            ([FromQuery] long maxUserId,
+            [FromBody] AddActivityDto dto)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+            var user = await _context.Users
+                .Include(u => u.Activities)
+                .FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+
             if (user == null) return NotFound();
 
-            user.ActivityType = dto.ActivityType;
+            bool isFirst = !user.Activities.Any();
+
+            var activity = new Activity
+            {
+                UserId = user.Id,
+                Name = dto.Name,
+                IsDefault = isFirst
+            };
+
+            _context.Activities.Add(activity);
             await _context.SaveChangesAsync();
 
+            return Ok(new ActivityDto
+            {
+                Id = activity.Id,
+                Name = activity.Name,
+                IsDefault = activity.IsDefault
+            });
+        }
+
+        [HttpPut("activities/{id}/default")]
+        public async Task<ActionResult> SetDefaultActivity(
+            [FromQuery] long maxUserId,
+            int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.Activities)
+                .FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+
+            if (user == null) return NotFound();
+
+            var activity = user.Activities.FirstOrDefault(a => a.Id == id);
+            if (activity == null) return NotFound();
+
+            foreach (var a in user.Activities)
+            {
+                a.IsDefault = (a.Id == id);
+            }
+
+            await _context.SaveChangesAsync();
             return Ok();
         }
 
@@ -160,6 +222,35 @@ namespace AutoUchet.Api.Controllers
             {
                 RemindAboutTax = user.RemindAboutTax,
             });
+        }
+
+        [HttpDelete("activities/{id}")]
+        public async Task<ActionResult> DeleteActivity(
+            [FromQuery] long maxUserId,
+            int id)
+        {
+            var user = await _context.Users
+                .Include(u => u.Activities)
+                .FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
+
+            if (user == null) return NotFound();
+
+            var activity = user.Activities.FirstOrDefault(a => a.Id == id);
+            if (activity == null) return NotFound();
+
+            if (activity.IsDefault && user.Activities.Count > 1)
+            {
+                var nextDefault = user.Activities.FirstOrDefault(a => a.Id != id);
+                if (nextDefault != null)
+                {
+                    nextDefault.IsDefault = true;
+                }
+            }
+
+            _context.Activities.Remove(activity);
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }

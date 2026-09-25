@@ -124,7 +124,10 @@ namespace AutoUchet.Api.Controllers
                 UserId = user.Id,
                 Amount = dto.Amount,
                 BuyerType = dto.BuyerType,
-                PurposeOfPayment = dto.PurposeOfPayment,
+                PurposeOfPayment = await _context.Activities
+                    .Where(a => a.Id == dto.ActivityId && a.UserId == user.Id)
+                    .Select(a => a.Name)
+                    .FirstOrDefaultAsync() ?? "Без назначения",
                 Status = "WaitingPayment",
                 PaymentType = "Auto",
                 RobokassaInvoiceId = invoiceId,
@@ -157,7 +160,10 @@ namespace AutoUchet.Api.Controllers
                 UserId = user.Id,
                 Amount = dto.Amount,
                 BuyerType = dto.BuyerType,
-                PurposeOfPayment = dto.PurposeOfPayment,
+                PurposeOfPayment = await _context.Activities
+                    .Where(a => a.Id == dto.ActivityId && a.UserId == user.Id)
+                    .Select(a => a.Name)
+                    .FirstOrDefaultAsync() ?? "Без назначения",
                 Status = "Paid",
                 PaymentType = "Manual",
                 PaidAt = DateTime.UtcNow,
