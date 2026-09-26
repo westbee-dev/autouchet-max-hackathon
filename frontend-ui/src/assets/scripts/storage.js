@@ -60,7 +60,7 @@
 
         if (!id) {
             throw new Error(
-                'Не передан maxUserId. Откройте приложение по ссылке из бота (?maxUserId=...).'
+                'Вы не авторизовались. Откройте приложение по ссылке из бота'
             );
         }
 
@@ -104,7 +104,7 @@
     function showBootError(error) {
         console.error(error);
 
-        var target = document.querySelector('main') || document.body;
+        var target = document.querySelector('.container') || document.body;
         var box = document.createElement('div');
         box.className = 'boot_error';
         box.textContent = error && error.message
@@ -147,6 +147,8 @@
             amount: data.amount,
             activityId: Number(data.activityId)
         };
+
+        if (mode === 'manual' && data.paidAt) payload.paidAt = data.paidAt;
 
         var path = mode === 'manual'
             ? '/api/Receipts/mark-as-paid'
