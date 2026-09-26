@@ -2,6 +2,12 @@ span {
     display: flex;
 }
 
+.header_avatar {
+    width: 29px;
+    height: 29px;
+    font-size: 15px;
+}
+
 .menu {
     margin: 11px 0 0 156px;
     cursor: pointer;
