@@ -1,7 +1,7 @@
 (function () {
     'use strict';
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function init() {
         var id = Atc.getQueryParam('id');
         var receipt = id ? Atc.getReceiptById(id) : null;
 
@@ -10,11 +10,17 @@
             return;
         }
 
-        var meta = Atc.STATUS_META[receipt.status];
+        renderFields(receipt);
+        bindCopyButton(receipt);
+        bindDelete(id);
+    }
+
+    function renderFields(receipt) {
+        var meta = Atc.STATUS_META[receipt.status] || { label: 'Не оплачено', css: 'denied' };
         var values = {
             amount: Atc.formatMoney(receipt.amount),
             buyerType: receipt.buyerType === 'legal' ? 'Юр. лицо' : 'Физ. лицо',
-            taxRate: (receipt.taxRate * 100) + '%',
+            taxRate: Math.round(receipt.taxRate * 100) + '%',
             status: meta.label,
             description: receipt.description,
             date: Atc.formatDateFull(receipt.paidAt || receipt.createdAt)
@@ -24,27 +30,28 @@
             var el = document.querySelector('[data-field="' + key + '"]');
             if (el) el.textContent = values[key];
         });
+    }
 
+    function bindCopyButton(receipt) {
         var copyBtn = document.getElementById('copy_link');
-        var fakeLink = window.location.origin + '/pay/' + receipt.id;
+        var paymentUrl = receipt.paymentUrl || '';
 
-        if (receipt.status === 'awaiting_payment') {
-            copyBtn.hidden = false;
-            copyBtn.addEventListener('click', function () {
-                Atc.copyToClipboard(fakeLink).then(function () {
-                    var original = copyBtn.textContent;
-                    copyBtn.textContent = 'Скопировано!';
-                    setTimeout(function () { copyBtn.textContent = original; }, 1500);
-                });
-            });
-        } else {
+        if (!receipt.paymentUrl || receipt.status === 'paid' || receipt.status === 'manual_recorded') {
             copyBtn.hidden = true;
+            return;
         }
 
-        bindDelete(receipt);
-    });
+        copyBtn.hidden = false;
+        copyBtn.addEventListener('click', function () {
+            Atc.copyToClipboard(paymentUrl).then(function () {
+                var original = copyBtn.textContent;
+                copyBtn.textContent = 'Скопировано!';
+                setTimeout(function () { copyBtn.textContent = original; }, 1500);
+            });
+        });
+    }
 
-    function bindDelete(receipt) {
+    function bindDelete(id) {
         var deleteBtn = document.getElementById('delete_receipt');
         var confirm = document.getElementById('confirm');
         var backdrop = document.getElementById('confirm-backdrop');
@@ -84,9 +91,17 @@
 
         if (confirmBtn) {
             confirmBtn.addEventListener('click', function () {
-                Atc.removeReceipt(receipt.id);
-                window.location.href = 'home.html';
+                Atc.removeReceipt(id).then(function () {
+                    window.location.href = 'home.html';
+                }).catch(function (error) {
+                    console.error(error);
+                    alert('Не удалось удалить чек. Попробуйте ещё раз.');
+                });
             });
         }
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Atc.load(['receipts']).then(init).catch(Atc.showBootError);
+    });
 })();

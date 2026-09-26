@@ -1,14 +1,42 @@
 (function () {
     'use strict';
 
-    function renderProfileName() {
+    function init() {
+        renderProfile();
+        renderActivities();
+        bindListEvents();
+        bindForm();
+    }
+
+    function checksWord(count) {
+        var n = Math.abs(count) % 100;
+        var n1 = n % 10;
+
+        if (n > 10 && n < 20) return 'чеков';
+        if (n1 > 1 && n1 < 5) return 'чека';
+        if (n1 === 1) return 'чек';
+
+        return 'чеков';
+    }
+
+    function renderProfile() {
+        var profile = Atc.getProfile();
+
         var nameEl = document.getElementById('profile-name');
         var avatarEl = document.querySelector('.profile_avatar');
+        var userIdEl = document.getElementById('profile-user-id');
+        var countEl = document.getElementById('receipts-count');
+        var countLabelEl = document.getElementById('receipts-count-label');
+        var incomeEl = document.getElementById('annual-income');
 
-        if (!nameEl || !avatarEl) return;
+        if (!profile) return;
 
-        var name = nameEl.textContent.trim();
-        avatarEl.textContent = name ? name[0].toUpperCase() : 'П';
+        if (nameEl) nameEl.textContent = profile.firstName || 'Пользователь';
+        if (avatarEl) avatarEl.textContent = (profile.firstName || 'П')[0].toUpperCase();
+        if (userIdEl) userIdEl.textContent = 'id: ' + profile.maxUserId;
+        if (countEl) countEl.textContent = profile.receiptCountYear;
+        if (countLabelEl) countLabelEl.textContent = checksWord(profile.receiptCountYear) + ' за год';
+        if (incomeEl) incomeEl.textContent = Atc.formatMoney(profile.totalIncomeYear);
     }
 
     function renderStatusActivity() {
@@ -19,14 +47,6 @@
         var current = activities.filter(function (a) { return a.isDefault; })[0] || activities[0];
 
         el.textContent = current ? 'Самозанятый · ' + current.name : 'Самозанятый';
-    }
-
-    function renderStats() {
-        var receipts = Atc.getReceipts().filter(function (r) {
-            return r.status === 'paid' || r.status === 'manual_recorded';
-        });
-        document.getElementById('receipts-count').textContent = receipts.length;
-        document.getElementById('annual-income').textContent = Atc.formatMoney(Atc.getAnnualIncome());
     }
 
     function renderActivities() {
@@ -78,20 +98,20 @@
     }
 
     function bindListEvents() {
-        var list = document.getElementById('activity-list');
-
-        list.addEventListener('click', function (e) {
+        document.getElementById('activity-list').addEventListener('click', function (e) {
             var star = e.target.closest('.activity_item_star');
             var removeBtn = e.target.closest('.activity_item_remove');
 
             if (star) {
-                Atc.setDefaultActivity(star.dataset.id);
-                renderActivities();
+                Atc.setDefaultActivity(star.dataset.id)
+                    .then(renderActivities)
+                    .catch(handleError);
             }
 
             if (removeBtn) {
-                Atc.removeActivity(removeBtn.dataset.id);
-                renderActivities();
+                Atc.removeActivity(removeBtn.dataset.id)
+                    .then(renderActivities)
+                    .catch(handleError);
             }
         });
     }
@@ -99,21 +119,24 @@
     function bindForm() {
         document.getElementById('activity-form').addEventListener('submit', function (e) {
             e.preventDefault();
+
             var input = document.getElementById('new-activity-input');
             var name = input.value.trim();
             if (!name) return;
 
-            Atc.addActivity(name);
-            input.value = '';
-            renderActivities();
+            Atc.addActivity(name).then(function () {
+                input.value = '';
+                renderActivities();
+            }).catch(handleError);
         });
     }
 
+    function handleError(error) {
+        console.error(error);
+        alert('Не удалось сохранить изменения. Попробуйте ещё раз.');
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
-        renderProfileName();
-        renderStats();
-        renderActivities();
-        bindListEvents();
-        bindForm();
+        Atc.load(['profile', 'activities']).then(init).catch(Atc.showBootError);
     });
 })();

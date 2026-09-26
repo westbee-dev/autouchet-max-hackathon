@@ -1,84 +1,97 @@
 (function (window) {
     'use strict';
 
-    var RECEIPTS_KEY = 'atc_receipts';
-    var ACTIVITIES_KEY = 'atc_activities';
-    var SETTINGS_KEY = 'atc_settings';
-
     var TAX_RATE = { individual: 0.04, legal: 0.06 };
     var ANNUAL_LIMIT = 2400000;
 
+    var BUYER_TYPE_TO_API = { individual: 'Физ', legal: 'Юр' };
+    var BUYER_TYPE_FROM_API = { 'Физ': 'individual', 'Юр': 'legal' };
+
+    var STATUS_FROM_API = {
+        WaitingPayment: 'awaiting_payment',
+        Expired: 'expired'
+    };
+
     var STATUS_META = {
-        paid: { label: 'Оплачено',    css: 'approved' },
-        manual_recorded: { label: 'Оплачено',    css: 'approved' },
+        paid: { label: 'Оплачено', css: 'approved' },
+        manual_recorded: { label: 'Оплачено', css: 'approved' },
         awaiting_payment: { label: 'В обработке', css: 'remaining' },
         expired: { label: 'Не оплачено', css: 'denied' }
     };
 
-    function uid() {
-        return 'r_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-    }
+    var Store = {
+        receipts: null,
+        activities: null,
+        settings: null,
+        dashboard: null,
+        profile: null
+    };
 
-    function readJSON(key, fallback) {
-        try {
-            var raw = localStorage.getItem(key);
-            return raw ? JSON.parse(raw) : fallback;
-        } catch (e) {
-            console.error('Storage read error:', key, e);
-            return fallback;
+    var LOADERS = {
+        receipts: function () {
+            return apiGet('/api/Receipts').then(function (list) {
+                Store.receipts = (list || []).map(toReceipt);
+            });
+        },
+        activities: function () {
+            return apiGet('/api/Users/activities').then(function (list) {
+                Store.activities = sortActivities(list || []);
+            });
+        },
+        settings: function () {
+            return apiGet('/api/Users/settings').then(function (dto) {
+                Store.settings = dto;
+            });
+        },
+        dashboard: function () {
+            return apiGet('/api/Dashboard').then(function (dto) {
+                Store.dashboard = dto;
+            });
+        },
+        profile: function () {
+            return apiGet('/api/Users/profile').then(function (dto) {
+                Store.profile = dto;
+            });
         }
-    }
+    };
 
-    function writeJSON(key, value) {
-        try {
-            localStorage.setItem(key, JSON.stringify(value));
-        } catch (e) {
-            console.error('Storage write error:', key, e);
-        }
-    }
+    function requireUserId() {
+        var id = window.ATC_CONFIG.getMaxUserId();
 
-    function mkReceipt(data) {
-        return Object.assign({
-            id: uid(),
-            source: 'manual',
-            paidAt: null
-        }, data, { taxRate: TAX_RATE[data.buyerType] });
-    }
-
-    function getReceipts() { return readJSON(RECEIPTS_KEY, []); }
-    function saveReceipts(list) { writeJSON(RECEIPTS_KEY, list); }
-
-    function addReceipt(data) {
-        var list = getReceipts();
-        var receipt = mkReceipt(Object.assign({ createdAt: new Date().toISOString() }, data));
-        list.unshift(receipt);
-        saveReceipts(list);
-
-        return receipt;
-    }
-
-    function updateReceipt(id, patch) {
-        var list = getReceipts();
-        var idx = list.findIndex(function (r) { return r.id === id; });
-        if (idx === -1) {
-            return null;
+        if (!id) {
+            throw new Error(
+                'Не передан maxUserId. Откройте приложение по ссылке из бота (?maxUserId=...).'
+            );
         }
 
-        list[idx] = Object.assign({}, list[idx], patch);
-        saveReceipts(list);
-
-        return list[idx];
+        return id;
     }
 
-    function removeReceipt(id) {
-        var list = getReceipts().filter(function (r) { return r.id !== id; });
-        saveReceipts(list);
-
-        return list;
+    function apiGet(path) {
+        return window.AtcApi.get(path, { maxUserId: requireUserId() });
     }
 
-    function getReceiptById(id) {
-        return getReceipts().find(function (r) { return r.id === id; }) || null;
+    function toReceipt(dto) {
+        return {
+            id: dto.id,
+            amount: dto.amount,
+            buyerType: BUYER_TYPE_FROM_API[dto.buyerType] || 'individual',
+            description: dto.purposeOfPayment,
+            taxRate: dto.taxRate,
+            status: resolveStatus(dto),
+            source: dto.paymentType === 'Manual' ? 'manual' : 'robokassa',
+            paymentUrl: dto.paymentUrl,
+            createdAt: dto.createdAt,
+            paidAt: dto.paidAt
+        };
+    }
+
+    function resolveStatus(dto) {
+        if (dto.status === 'Paid') {
+            return dto.paymentType === 'Manual' ? 'manual_recorded' : 'paid';
+        }
+
+        return STATUS_FROM_API[dto.status] || 'awaiting_payment';
     }
 
     function sortActivities(list) {
@@ -88,57 +101,113 @@
         });
     }
 
-    function getActivities() { return sortActivities(readJSON(ACTIVITIES_KEY, [])); }
-    function saveActivities(list) { writeJSON(ACTIVITIES_KEY, list); }
+    function showBootError(error) {
+        console.error(error);
+
+        var target = document.querySelector('main') || document.body;
+        var box = document.createElement('div');
+        box.className = 'boot_error';
+        box.textContent = error && error.message
+            ? error.message
+            : 'Не удалось загрузить данные. Проверьте соединение с сервером.';
+
+        target.innerHTML = '';
+        target.appendChild(box);
+    }
+
+    function load(keys, refresh) {
+        return Promise.all(keys.map(function (key) {
+            var loader = LOADERS[key];
+            if (!loader) return Promise.reject(new Error('Неизвестный раздел данных: ' + key));
+
+            if (refresh || Store[key] === null) {
+                try {
+                    return Promise.resolve(loader());
+                } catch (e) {
+                    return Promise.reject(e);
+                }
+            }
+
+            return Promise.resolve();
+        })).then(function () { return Store; });
+    }
+
+    function getReceipts() { return Store.receipts || []; }
+
+    function getReceiptById(id) {
+        return getReceipts().filter(function (r) {
+            return String(r.id) === String(id);
+        })[0] || null;
+    }
+
+    function createReceipt(data, mode) {
+        var payload = {
+            maxUserId: Number(requireUserId()),
+            buyerType: BUYER_TYPE_TO_API[data.buyerType] || 'Физ',
+            amount: data.amount,
+            activityId: Number(data.activityId)
+        };
+
+        var path = mode === 'manual'
+            ? '/api/Receipts/mark-as-paid'
+            : '/api/Receipts/send-payment-link';
+
+        return window.AtcApi.post(path, payload).then(function (dto) {
+            Store.receipts = null;
+            return { id: dto.id, paymentUrl: dto.paymentUrl, paidAt: dto.paidAt };
+        });
+    }
+
+    function removeReceipt(id) {
+        return window.AtcApi.del('/api/Receipts/' + id, { maxUserId: requireUserId() })
+            .then(function () {
+                Store.receipts = (Store.receipts || []).filter(function (r) {
+                    return String(r.id) !== String(id);
+                });
+            });
+    }
+
+    function getActivities() { return Store.activities || []; }
 
     function addActivity(name) {
-        var list = getActivities();
-
-        list.push({ id: 'a_' + Date.now(), name: name, isDefault: list.length === 0 });
-        saveActivities(list);
-
-        return list;
+        return window.AtcApi
+            .post('/api/Users/activities', { name: name }, { maxUserId: requireUserId() })
+            .then(function () {
+                return LOADERS.activities();
+            });
     }
 
     function removeActivity(id) {
-        var list = getActivities().filter(function (a) { return a.id !== id; });
-
-        if (list.length && !list.some(function (a) { return a.isDefault; })) {
-            list[0].isDefault = true;
-        }
-        saveActivities(list);
-        
-        return list;
+        return window.AtcApi
+            .del('/api/Users/activities/' + id, { maxUserId: requireUserId() })
+            .then(function () {
+                return LOADERS.activities();
+            });
     }
 
     function setDefaultActivity(id) {
-        var list = getActivities().map(function (a) {
-            return Object.assign({}, a, { isDefault: a.id === id });
-        });
-        saveActivities(list);
-
-        return sortActivities(list);
+        return window.AtcApi
+            .put('/api/Users/activities/' + id + '/default', null, { maxUserId: requireUserId() })
+            .then(function () {
+                return LOADERS.activities();
+            });
     }
 
-    function moveActivityUp(id) {
-        var list = getActivities();
-        var idx = list.findIndex(function (a) { return a.id === id; });
+    function getSettings() { return Store.settings || { remindAboutTax: false }; }
 
-        if (idx > 0) {
-            var moved = list.splice(idx, 1)[0];
-            list.splice(idx - 1, 0, moved);
-            saveActivities(list);
-        }
+    function getDashboard() { return Store.dashboard; }
 
-        return getActivities();
-    }
+    function getProfile() { return Store.profile; }
 
-    function getSettings() { return readJSON(SETTINGS_KEY, DEFAULT_SETTINGS); }
     function saveSettings(patch) {
-        var settings = Object.assign({}, getSettings(), patch);
-        writeJSON(SETTINGS_KEY, settings);
+        var next = Object.assign({}, getSettings(), patch);
 
-        return settings;
+        return window.AtcApi
+            .put('/api/Users/settings', next, { maxUserId: requireUserId() })
+            .then(function (dto) {
+                Store.settings = dto;
+                return dto;
+            });
     }
 
     function isCountedStatus(status) {
@@ -159,39 +228,41 @@
             .reduce(function (sum, r) { return sum + r.amount * r.taxRate; }, 0);
     }
 
-    function getAnnualIncome(year) {
-        year = year || new Date().getFullYear();
-        return getReceipts()
-            .filter(function (r) {
-                if (!isCountedStatus(r.status)) return false;
-                return new Date(r.paidAt || r.createdAt).getFullYear() === year;
-            })
-            .reduce(function (sum, r) { return sum + r.amount; }, 0);
+    function getAnnualIncome() {
+        return Store.dashboard ? Store.dashboard.totalIncomeYear : 0;
     }
 
     function getAnnualLimitInfo() {
-        var income = getAnnualIncome();
-        var percent = (income / ANNUAL_LIMIT) * 100;
+        var percent = Store.dashboard ? Store.dashboard.limitPercent : 0;
         var level = 'normal';
+
         if (percent >= 100) level = 'danger';
         else if (percent >= 80) level = 'warning';
-        return { income: income, percent: Math.min(percent, 999), level: level, limit: ANNUAL_LIMIT };
+
+        return {
+            income: getAnnualIncome(),
+            percent: percent,
+            level: level,
+            limit: ANNUAL_LIMIT
+        };
     }
 
     function getReceiptsByQuarter(quarter, year) {
-        var ranges = { 1: [0, 2], 2: [3, 5], 3: [6, 8], 4: [9, 11] };
-        var range = ranges[quarter];
-        return getReceipts().filter(function (r) {
-            if (!isCountedStatus(r.status)) return false;
-            var d = new Date(r.paidAt || r.createdAt);
-            return d.getFullYear() === year && d.getMonth() >= range[0] && d.getMonth() <= range[1];
-        });
+        return window.AtcApi
+            .get('/api/Receipts/export', {
+                maxUserId: requireUserId(),
+                quarter: quarter,
+                year: year
+            })
+            .then(function (list) {
+                return (list || []).map(toReceipt);
+            });
     }
 
     function formatMoney(amount) {
         var rounded = Math.round(amount);
-        var withSpaces = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0\u00A0');
-        return withSpaces + '\u00A0₽';
+        var withSpaces = rounded.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '  ');
+        return withSpaces + ' ₽';
     }
 
     function formatDateShort(iso) {
@@ -240,17 +311,19 @@
         TAX_RATE: TAX_RATE,
         ANNUAL_LIMIT: ANNUAL_LIMIT,
         STATUS_META: STATUS_META,
+        load: load,
+        showBootError: showBootError,
         getReceipts: getReceipts,
-        addReceipt: addReceipt,
-        updateReceipt: updateReceipt,
-        removeReceipt: removeReceipt,
         getReceiptById: getReceiptById,
+        createReceipt: createReceipt,
+        removeReceipt: removeReceipt,
         getActivities: getActivities,
         addActivity: addActivity,
         removeActivity: removeActivity,
         setDefaultActivity: setDefaultActivity,
-        moveActivityUp: moveActivityUp,
         getSettings: getSettings,
+        getDashboard: getDashboard,
+        getProfile: getProfile,
         saveSettings: saveSettings,
         getPreviousMonthDueAmount: getPreviousMonthDueAmount,
         getAnnualIncome: getAnnualIncome,
