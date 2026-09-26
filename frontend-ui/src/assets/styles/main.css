@@ -30,6 +30,18 @@
     border-top: 1px dashed #99999f;
 }
 
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #eaf9f1;
+    color: #14a57d;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    line-height: 1;
+}
+
 .header_text {
     margin: 6px 0px 0px 0px;
 }

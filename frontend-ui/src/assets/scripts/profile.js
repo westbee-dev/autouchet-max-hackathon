@@ -1,6 +1,16 @@
 (function () {
     'use strict';
 
+    function renderProfileName() {
+        var nameEl = document.getElementById('profile-name');
+        var avatarEl = document.querySelector('.profile_avatar');
+
+        if (!nameEl || !avatarEl) return;
+
+        var name = nameEl.textContent.trim();
+        avatarEl.textContent = name ? name[0].toUpperCase() : 'П';
+    }
+
     function renderStatusActivity() {
         var el = document.getElementById('status-activity');
         if (!el) return;
@@ -26,7 +36,7 @@
         var activities = Atc.getActivities();
         list.innerHTML = '';
 
-        activities.forEach(function (a, index) {
+        activities.forEach(function (a) {
             var line = document.createElement('div');
             line.className = 'rope_line';
             list.appendChild(line);
@@ -53,16 +63,6 @@
             var actions = document.createElement('div');
             actions.className = 'activity_item_actions';
 
-            if (index > 0) {
-                var up = document.createElement('button');
-                up.type = 'button';
-                up.className = 'activity_item_up';
-                up.dataset.id = a.id;
-                up.setAttribute('aria-label', 'Поднять выше');
-                up.textContent = '↑';
-                actions.appendChild(up);
-            }
-
             var removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.className = 'activity_item_remove';
@@ -82,16 +82,10 @@
 
         list.addEventListener('click', function (e) {
             var star = e.target.closest('.activity_item_star');
-            var up = e.target.closest('.activity_item_up');
             var removeBtn = e.target.closest('.activity_item_remove');
 
             if (star) {
                 Atc.setDefaultActivity(star.dataset.id);
-                renderActivities();
-            }
-
-            if (up) {
-                Atc.moveActivityUp(up.dataset.id);
                 renderActivities();
             }
 
@@ -116,6 +110,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
+        renderProfileName();
         renderStats();
         renderActivities();
         bindListEvents();
