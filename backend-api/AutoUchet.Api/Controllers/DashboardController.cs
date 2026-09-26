@@ -17,47 +17,48 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<DashboardResponseDto>> GetDashboard
-            ([FromQuery] long maxUserId)
+        public async Task<ActionResult<DashboardResponseDto>> GetDashboard([FromQuery] long maxUserId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
             if (user == null) return NotFound();
 
             var nowDate = DateTime.UtcNow;
+            var culture = new CultureInfo("ru-RU");
+
             var deadlineDate = CreateDeadlineDate(nowDate);
             var taxDate = nowDate.AddMonths(-1);
-            var culture = new CultureInfo("ru-RU");
 
             if (nowDate.Day > deadlineDate.Day)
             {
-                taxDate = taxDate.AddMonths(1);
+                taxDate = nowDate;
                 deadlineDate = CreateDeadlineDate(nowDate.AddMonths(1));
             }
 
-            var startOfMonth = new DateTime
-                (taxDate.Year, taxDate.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var startOfMonth = new DateTime(taxDate.Year, taxDate.Month, 1, 0, 0, 0, DateTimeKind.Utc);
             var endOfMonth = startOfMonth.AddMonths(1);
 
             var totalIncomeMonth = await _context.Receipts
-                .Where(
-                r => r.UserId == user.Id &&
-                r.PaidAt.Value.Month == taxDate.Month &&
-                r.PaidAt.Value.Year == taxDate.Year && 
-                r.Status == "Paid")
+                .Where(r => r.UserId == user.Id &&
+                            r.Status == "Paid" &&
+                            r.PaidAt >= startOfMonth &&
+                            r.PaidAt < endOfMonth)
                 .SumAsync(r => r.Amount);
 
             var taxAmount = await _context.Receipts
                 .Where(r => r.UserId == user.Id &&
-                r.Status == "Paid" &&
-                r.PaidAt >= startOfMonth &&
-                r.PaidAt < endOfMonth)
+                            r.Status == "Paid" &&
+                            r.PaidAt >= startOfMonth &&
+                            r.PaidAt < endOfMonth)
                 .SumAsync(r => r.Amount * (r.BuyerType == "Физ" ? 0.04m : 0.06m));
 
+            var startOfYear = new DateTime(nowDate.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endOfYear = startOfYear.AddYears(1);
+
             var totalIncomeYear = await _context.Receipts
-                .Where(
-                r => r.UserId == user.Id &&
-                r.Status == "Paid" &&
-                r.CreatedAt.Year == nowDate.Year)
+                .Where(r => r.UserId == user.Id &&
+                            r.Status == "Paid" &&
+                            r.PaidAt >= startOfYear &&
+                            r.PaidAt < endOfYear)
                 .SumAsync(r => r.Amount);
 
             var limitPercent = Math.Round(((totalIncomeYear / 2_400_000m) * 100), 1);
