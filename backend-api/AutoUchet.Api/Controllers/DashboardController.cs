@@ -17,7 +17,8 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<DashboardResponseDto>> GetDashboard([FromQuery] long maxUserId)
+        public async Task<ActionResult<DashboardResponseDto>> GetDashboard
+            ([FromQuery] long maxUserId)
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.MaxUserId == maxUserId);
             if (user == null) return NotFound();
@@ -33,15 +34,24 @@ namespace AutoUchet.Api.Controllers
                 deadlineDate = CreateDeadlineDate(nowDate.AddMonths(1));
             }
 
+            var startOfMonth = new DateTime
+                (taxDate.Year, taxDate.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endOfMonth = startOfMonth.AddMonths(1);
+
             var totalIncomeMonth = await _context.Receipts
                 .Where(
                 r => r.UserId == user.Id &&
-                r.CreatedAt.Month == taxDate.Month &&
-                r.CreatedAt.Year == taxDate.Year && 
+                r.PaidAt.Value.Month == taxDate.Month &&
+                r.PaidAt.Value.Year == taxDate.Year && 
                 r.Status == "Paid")
                 .SumAsync(r => r.Amount);
 
-            var taxAmount = totalIncomeMonth * user.TaxRate;
+            var taxAmount = await _context.Receipts
+                .Where(r => r.UserId == user.Id &&
+                r.Status == "Paid" &&
+                r.PaidAt >= startOfMonth &&
+                r.PaidAt < endOfMonth)
+                .SumAsync(r => r.Amount * (r.BuyerType == "Физ" ? 0.04m : 0.06m));
 
             var totalIncomeYear = await _context.Receipts
                 .Where(
