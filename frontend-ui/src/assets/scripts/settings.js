@@ -2,13 +2,19 @@
     'use strict';
 
     document.addEventListener('DOMContentLoaded', function () {
-        var toggle = document.querySelector('.switch_input');
-        var settings = Atc.getSettings();
+        Atc.load(['settings']).then(function () {
+            var toggle = document.querySelector('.switch_input');
+            if (!toggle) return;
 
-        toggle.checked = settings.remindersEnabled;
+            toggle.checked = !!Atc.getSettings().remindAboutTax;
 
-        toggle.addEventListener('change', function () {
-            Atc.saveSettings({ remindersEnabled: toggle.checked });
-        });
+            toggle.addEventListener('change', function () {
+                Atc.saveSettings({ remindAboutTax: toggle.checked })
+                    .catch(function (error) {
+                        console.error(error);
+                        toggle.checked = !!Atc.getSettings().remindAboutTax;
+                    });
+            });
+        }).catch(Atc.showBootError);
     });
 })();

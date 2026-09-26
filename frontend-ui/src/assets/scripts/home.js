@@ -1,8 +1,10 @@
 (function () {
     'use strict';
 
+    var FALLBACK_STATUS = { label: 'Не оплачено', css: 'denied' };
+
     function buildHistoryItem(r) {
-        var meta = Atc.STATUS_META[r.status];
+        var meta = Atc.STATUS_META[r.status] || FALLBACK_STATUS;
         var buyerLabel = r.buyerType === 'legal' ? 'Юр. лицо' : 'Физ. лицо';
 
         var link = document.createElement('a');
@@ -75,7 +77,7 @@
             itemsList.appendChild(buildHistoryItem(r));
         });
     }
-    
+
     function renderDueAmount() {
         var due = Atc.getPreviousMonthDueAmount();
         var el = document.getElementById('due-amount');
@@ -87,9 +89,18 @@
         if (label) label.textContent = 'К уплате за ' + prevMonthName;
     }
 
+    function renderDeadline() {
+        var dashboard = Atc.getDashboard();
+        var el = document.getElementById('deadline-text');
+        if (el && dashboard) el.textContent = dashboard.deadlineText;
+    }
+
     function renderIncome() {
         var el = document.getElementById('annual-income');
         if (el) el.textContent = Atc.formatMoney(Atc.getAnnualIncome());
+
+        var yearEl = document.getElementById('income-year');
+        if (yearEl) yearEl.textContent = new Date().getFullYear();
     }
 
     function renderLimit() {
@@ -106,10 +117,15 @@
         }
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function renderAll() {
         renderReceipts();
         renderDueAmount();
+        renderDeadline();
         renderIncome();
         renderLimit();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Atc.load(['receipts', 'dashboard']).then(renderAll).catch(Atc.showBootError);
     });
 })();

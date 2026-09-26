@@ -1,6 +1,48 @@
 (function () {
     'use strict';
 
+    function renderQuarterList() {
+        var list = document.querySelector('.quarter_list');
+        if (!list) return;
+
+        var now = new Date();
+        var year = now.getFullYear();
+        var currentQuarter = Math.floor(now.getMonth() / 3) + 1;
+
+        var rope = document.createElement('div');
+        rope.className = 'rope_line';
+
+        list.innerHTML = '';
+
+        for (var i = 0; i < 4; i++) {
+            var quarter = ((currentQuarter - i - 1 + 4) % 4) + 1;
+
+            list.appendChild(rope.cloneNode());
+
+            var label = document.createElement('label');
+            label.className = 'quarter_item';
+
+            var text = document.createElement('span');
+            text.className = 'quarter_item_label';
+            text.textContent = quarter + ' квартал ' + year;
+
+            var radio = document.createElement('input');
+            radio.type = 'radio';
+            radio.name = 'quarter';
+            radio.className = 'quarter_item_radio';
+            radio.value = 'q' + quarter + '-' + year;
+            radio.checked = i === 0;
+
+            var circle = document.createElement('span');
+            circle.className = 'quarter_item_circle';
+
+            label.appendChild(text);
+            label.appendChild(radio);
+            label.appendChild(circle);
+            list.appendChild(label);
+        }
+    }
+
     function buildReportText(quarter, year, receipts) {
         var lines = [];
         lines.push('Отчёт за ' + quarter + ' квартал ' + year + ' года');
@@ -41,26 +83,34 @@
         URL.revokeObjectURL(url);
     }
 
+    function handleExport(e) {
+        e.preventDefault();
+
+        var selected = document.querySelector('input[name="quarter"]:checked');
+        if (!selected) return;
+
+        var quarterMatch = selected.value.match(/q(\d)-(\d{4})/);
+        var quarter = Number(quarterMatch[1]);
+        var year = Number(quarterMatch[2]);
+
+        Atc.getReceiptsByQuarter(quarter, year)
+            .then(function (receipts) {
+                if (receipts.length === 0) {
+                    alert('За этот квартал нет оплаченных или зафиксированных чеков');
+                    return;
+                }
+
+                var text = buildReportText(quarter, year, receipts);
+                downloadTextFile('otchet-q' + quarter + '-' + year + '.txt', text);
+            })
+            .catch(function (error) {
+                console.error(error);
+                alert('Не удалось сформировать отчёт. Попробуйте ещё раз.');
+            });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('export-form').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            var selected = document.querySelector('input[name="quarter"]:checked');
-            if (!selected) return;
-
-            var quarterMatch = selected.value.match(/q(\d)-(\d{4})/);
-            var quarter = Number(quarterMatch[1]);
-            var year = Number(quarterMatch[2]);
-
-            var receipts = Atc.getReceiptsByQuarter(quarter, year);
-
-            if (receipts.length === 0) {
-                alert('За этот квартал нет оплаченных или зафиксированных чеков');
-                return;
-            }
-
-            var text = buildReportText(quarter, year, receipts);
-            downloadTextFile('otchet-q' + quarter + '-' + year + '.txt', text);
-        });
+        renderQuarterList();
+        document.getElementById('export-form').addEventListener('submit', handleExport);
     });
 })();

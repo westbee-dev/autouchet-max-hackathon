@@ -1,18 +1,5 @@
 (function () {
     'use strict';
-    function toDateInputValue(date) {
-        var d = new Date(date);
-        var mm = String(d.getMonth() + 1).padStart(2, '0');
-        var dd = String(d.getDate()).padStart(2, '0');
-        return d.getFullYear() + '-' + mm + '-' + dd;
-    }
-
-    function getSelectedDate() {
-        var input = document.getElementById('paid_date');
-        if (!input || !input.value) return new Date();
-        var parts = input.value.split('-');
-        return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 12, 0, 0);
-    }
 
     function populateActivitySelect() {
         var select = document.getElementById('activity');
@@ -53,16 +40,11 @@
 
     function getFormData() {
         var form = document.getElementById('receipt-form');
-        var amount = Number(form.amount.value);
-        var buyerType = getSelectedBuyerType();
-        var activityId = form.activity.value;
-        var activities = Atc.getActivities();
-        var activity = activities.find(function (a) { return a.id === activityId; });
 
         return {
-            amount: amount,
-            buyerType: buyerType,
-            description: activity ? activity.name : 'Без названия'
+            amount: Number(form.amount.value),
+            buyerType: getSelectedBuyerType(),
+            activityId: form.activity.value
         };
     }
 
@@ -71,6 +53,12 @@
             alert('Укажите сумму больше нуля');
             return false;
         }
+
+        if (!data.activityId) {
+            alert('Сначала добавьте вид деятельности в профиле');
+            return false;
+        }
+
         return true;
     }
 
@@ -84,37 +72,32 @@
             return;
         }
 
-        var receipt = Atc.addReceipt(Object.assign({}, data, {
-            status: 'awaiting_payment',
-            source: 'robokassa'
-        }));
-
-        window.location.href = 'paid_in_progress.html?id=' + receipt.id;
+        Atc.createReceipt(data, 'auto')
+            .then(function (receipt) {
+                window.location.href = 'paid_in_progress.html?id=' + receipt.id;
+            })
+            .catch(handleSubmitError);
     }
 
     function handleFixPaid() {
         var data = getFormData();
         if (!validate(data)) return;
 
-        var paidDate = getSelectedDate();
-
-        var receipt = Atc.addReceipt(Object.assign({}, data, {
-            status: 'manual_recorded',
-            source: 'manual',
-            createdAt: paidDate.toISOString(),
-            paidAt: paidDate.toISOString()
-        }));
-
-        window.location.href = 'paid_success.html?id=' + receipt.id;
+        Atc.createReceipt(data, 'manual')
+            .then(function (receipt) {
+                window.location.href = 'paid_success.html?id=' + receipt.id;
+            })
+            .catch(handleSubmitError);
     }
 
-    document.addEventListener('DOMContentLoaded', function () {
+    function handleSubmitError(error) {
+        console.error(error);
+        alert('Не удалось создать чек. Попробуйте ещё раз.');
+    }
+
+    function init() {
         populateActivitySelect();
         updateButtonsAvailability();
-        var paidDateInput = document.getElementById('paid_date');
-        if (paidDateInput && !paidDateInput.value) {
-            paidDateInput.value = toDateInputValue(new Date());
-        }
 
         document.querySelectorAll('input[name="customer_type"]').forEach(function (input) {
             input.addEventListener('change', updateButtonsAvailability);
@@ -122,9 +105,14 @@
 
         document.getElementById('receipt-form').addEventListener('submit', handleSendLink);
         document.getElementById('fix_paid').addEventListener('click', handleFixPaid);
+
         var prefillAmount = Atc.getQueryParam('prefill_amount');
         if (prefillAmount) {
             document.getElementById('amount').value = prefillAmount;
         }
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Atc.load(['activities']).then(init).catch(Atc.showBootError);
     });
 })();

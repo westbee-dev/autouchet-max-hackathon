@@ -68,3 +68,23 @@ body {
         opacity: 0.85;
     }
 }
+
+.boot_error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 295px;
+    min-height: 180px;
+    margin: 24px auto 0;
+    padding: 20px;
+    box-sizing: border-box;
+    text-align: center;
+    background-color: #ffffff;
+    border-radius: 17px;
+    box-shadow: 2px 16px 18px 1px rgba(0, 0, 0, 0.09);
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #d4746e;
+}
