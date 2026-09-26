@@ -1,6 +1,20 @@
 (function () {
     'use strict';
 
+    function toDateInputValue(date) {
+        var d = new Date(date);
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + mm + '-' + dd;
+    }
+
+    function getSelectedDate() {
+        var input = document.getElementById('paid_date');
+        if (!input || !input.value) return new Date();
+        var parts = input.value.split('-');
+        return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]), 12, 0, 0);
+    }
+
     function populateActivitySelect() {
         var select = document.getElementById('activity');
         var activities = Atc.getActivities();
@@ -44,7 +58,8 @@
         return {
             amount: Number(form.amount.value),
             buyerType: getSelectedBuyerType(),
-            activityId: form.activity.value
+            activityId: form.activity.value,
+            paidAt: getSelectedDate().toISOString()
         };
     }
 
@@ -98,6 +113,11 @@
     function init() {
         populateActivitySelect();
         updateButtonsAvailability();
+
+        var paidDateInput = document.getElementById('paid_date');
+        if (paidDateInput && !paidDateInput.value) {
+            paidDateInput.value = toDateInputValue(new Date());
+        }
 
         document.querySelectorAll('input[name="customer_type"]').forEach(function (input) {
             input.addEventListener('change', updateButtonsAvailability);
