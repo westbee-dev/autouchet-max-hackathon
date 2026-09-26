@@ -21,7 +21,8 @@ namespace AutoUchet.Api.Controllers
         public async Task<List<TaxSummaryDto>> GetUsersTaxSummary()
         {
             var nowDate = DateTime.UtcNow;
-            var startOfMonth = new DateTime(nowDate.Year, nowDate.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var targetDate = nowDate.AddMonths(-1);
+            var startOfMonth = new DateTime(targetDate.Year, targetDate.Month, 1, 0, 0, 0, DateTimeKind.Utc);
             var endOfMonth = startOfMonth.AddMonths(1);
 
             var summary = await _context.Users
@@ -37,7 +38,6 @@ namespace AutoUchet.Api.Controllers
                 .ToListAsync();
 
             return summary;
-
         }
 
         [HttpGet("profile")]

@@ -6,5 +6,6 @@
         public string BuyerType { get; set; }
         public decimal Amount { get; set; }
         public int ActivityId { get; set; }
+        public DateTime? PaidAt { get; set; } = null;
     }
 }

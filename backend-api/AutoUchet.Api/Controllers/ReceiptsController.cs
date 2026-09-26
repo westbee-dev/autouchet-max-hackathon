@@ -87,9 +87,9 @@ namespace AutoUchet.Api.Controllers
             var reportList = await _context.Receipts
                 .Where(r => r.UserId == user.Id &&
                 r.Status == "Paid" &&
-                r.CreatedAt.Year == dto.Year &&
-                r.CreatedAt.Month >= startMonth &&
-                r.CreatedAt.Month <= endMonth)
+                r.PaidAt.Value.Year == dto.Year &&
+                r.PaidAt.Value.Month >= startMonth &&
+                r.PaidAt.Value.Month <= endMonth)
                 .OrderByDescending(r => r.CreatedAt)
                 .Select(r => new ReceiptResponseDto
                 {
@@ -174,7 +174,7 @@ namespace AutoUchet.Api.Controllers
                     .FirstOrDefaultAsync() ?? "Без назначения",
                 Status = "Paid",
                 PaymentType = "Manual",
-                PaidAt = DateTime.UtcNow,
+                PaidAt = dto.PaidAt ?? DateTime.UtcNow,
                 MockFnsUrl = mockFnsUrl,
                 CreatedAt = DateTime.UtcNow
             };
