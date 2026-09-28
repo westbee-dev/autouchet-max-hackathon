@@ -19,6 +19,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 
+var botUrl = builder.Configuration["BotSettings:NotificationUrl"];
+AutoUchet.Api.Services.AppConfig.BotUrl = botUrl;
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -27,8 +30,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseHttpsRedirection();
-app.UseCors();
+app.UseCors(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.UseMiddleware<AutoUchet.Api.Middleware.ExceptionMiddleware>();
 
 app.MapControllers();
 
