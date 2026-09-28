@@ -21,12 +21,23 @@ class Bot
 {
     static async Task Main(string[] args)
     {
-        
         Env.Load();
-        string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX");
-        string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");
-
         var builder = WebApplication.CreateBuilder(args);
+
+        string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX")
+            ?? builder.Configuration["MaxToken:TelegramToken"]
+            ?? throw new InvalidOperationException("API токен не найден");
+
+        string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL")
+            ?? builder.Configuration["BotSettings:MiniAppUrl"]
+            ?? "http://localhost";
+
+        string backendApiUrl = Environment.GetEnvironmentVariable("BackendApi__BaseUrl")
+                               ?? builder.Configuration["BackendApi:BaseUrl"]
+                               ?? "http://backend-api:8080";
+
+
+
         builder.Services.AddControllers();
         builder.Services.AddHttpClient<BackendApiClient>();
         builder.Services.AddHostedService<TaxReminderBackgroundService>();
