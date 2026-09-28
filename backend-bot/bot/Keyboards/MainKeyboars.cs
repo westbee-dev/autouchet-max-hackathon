@@ -1,8 +1,5 @@
-using MAX.Bot.Interfaces.Models.Request.Message;
-using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment.Payloads;
-using System.Collections.Generic;
 
 namespace Autouchet_Bot.Keyboards
 {
@@ -10,10 +7,23 @@ namespace Autouchet_Bot.Keyboards
     {
         public static Attachment GetMainMenu(string miniAppUrl)
         {
+            return GetMainMenu(miniAppUrl, null);
+        }
+
+        public static Attachment GetMainMenu(string miniAppUrl, long? senderId)
+        {
+            string urlId = miniAppUrl;
+
+            if (senderId.HasValue)
+            {
+                char separator = miniAppUrl.Contains('?') ? '&' : '?';
+                urlId = $"{miniAppUrl}{separator}maxUserId={senderId.Value}";
+            }
+
             var openMiniAppButton = new LinkButton
             {
                 Text = "Запустить",
-                Url = miniAppUrl
+                Url = urlId
             };
 
             var helpButton = new CallbackButton
@@ -92,6 +102,7 @@ namespace Autouchet_Bot.Keyboards
                 }
             };
         }
+
         public static Attachment GetBackToAgreementKeyboard()
         {
             return new InlineKeyboardAttachment
@@ -109,6 +120,27 @@ namespace Autouchet_Bot.Keyboards
                             }
                         }
                     }
+                }
+            };
+        }
+
+        public static Attachment GetPayButton(string url, string buttonText)
+        {
+            return new InlineKeyboardAttachment
+            {
+                Payload = new InlineKeyboardPayload
+                {
+                    Buttons = new List<List<Button>>
+                {
+                    new List<Button>
+                    {
+                        new LinkButton
+                        {
+                            Text = buttonText,
+                            Url = url
+                        }
+                    }
+                }
                 }
             };
         }

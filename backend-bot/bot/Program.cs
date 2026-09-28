@@ -21,6 +21,7 @@ class Bot
 {
     static async Task Main(string[] args)
     {
+        
         Env.Load();
         string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX");
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");
@@ -29,8 +30,9 @@ class Bot
         builder.Services.AddControllers();
         builder.Services.AddHttpClient<BackendApiClient>();
         builder.Services.AddHostedService<TaxReminderBackgroundService>();
-
-
+        builder.Services.AddEndpointsApiExplorer();
+        builder.Services.AddSwaggerGen();
+        
         var client = new MaxBotClient(botToken);
 
         builder.Services.AddSingleton<IMaxBotClient>(client);    
@@ -41,6 +43,11 @@ class Bot
 
         var app = builder.Build();
         app.MapControllers();
+        if (app.Environment.IsDevelopment())
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+        }
         var messageHandler = app.Services.GetRequiredService<MessageHandler>();
         var callbackHandler = app.Services.GetRequiredService<CallbackHandler>();
 
