@@ -123,7 +123,17 @@
         }
     }
 
+    function renderAvatar() {
+    var profile = Atc.getProfile();
+    var avatarEl = document.querySelector('.header_avatar');
+
+    if (avatarEl && profile) {
+            avatarEl.textContent = (profile.firstName || 'П')[0].toUpperCase();
+        }
+    }
+
     function renderAll() {
+        renderAvatar();
         renderReceipts();
         renderDueAmount();
         renderDeadline();
@@ -132,6 +142,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', function () {
-        Atc.load(['receipts', 'dashboard']).then(renderAll).catch(Atc.showBootError);
+        Atc.load(['receipts', 'dashboard', 'profile']).then(renderAll).catch(Atc.showBootError);
     });
 })();
