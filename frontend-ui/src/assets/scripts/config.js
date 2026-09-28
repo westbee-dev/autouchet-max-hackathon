@@ -23,7 +23,7 @@
     }
 
     window.ATC_CONFIG = {
-        baseUrl: 'http://localhost:5232',
+        baseUrl: 'http://26.121.182.157:5232',
         getMaxUserId: getMaxUserId
     };
 })(window);

@@ -29,7 +29,7 @@
 
         var date = document.createElement('span');
         date.className = 'history_item_date';
-        date.textContent = Atc.formatDateShort(r.createdAt);
+        date.textContent = Atc.formatDateShort(r.paidAt || r.createdAt);
 
         data.appendChild(tag);
         data.appendChild(date);
@@ -57,10 +57,16 @@
         return link;
     }
 
+    function getDisplayDate(r) {
+        return new Date(r.paidAt || r.createdAt).getTime();
+    }
+
     function renderReceipts() {
         var itemsList = document.getElementById('items-list');
         var emptyState = document.getElementById('empty-history');
-        var receipts = Atc.getReceipts();
+        var receipts = Atc.getReceipts().slice().sort(function (a, b) {
+            return getDisplayDate(b) - getDisplayDate(a);
+        });
 
         if (receipts.length === 0) {
             itemsList.hidden = true;
