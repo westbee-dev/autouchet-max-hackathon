@@ -21,6 +21,7 @@ class Bot
 {
     static async Task Main(string[] args)
     {
+        
         Env.Load();
         string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX");
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");

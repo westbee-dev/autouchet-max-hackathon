@@ -1,21 +1,29 @@
-using MAX.Bot.Interfaces.Models.Request.Message;
-using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment.Payloads;
-using System.Collections.Generic;
 
 namespace Autouchet_Bot.Keyboards
 {
     public static class MainKeyboard
     {
-        public static Attachment GetMainMenu(string miniAppUrl, long senderId)
+        public static Attachment GetMainMenu(string miniAppUrl)
         {
-            var separator = miniAppUrl.Contains('?') ? "&" : "?";
+            return GetMainMenu(miniAppUrl, null);
+        }
+
+        public static Attachment GetMainMenu(string miniAppUrl, long? senderId)
+        {
+            string urlId = miniAppUrl;
+
+            if (senderId.HasValue)
+            {
+                char separator = miniAppUrl.Contains('?') ? '&' : '?';
+                urlId = $"{miniAppUrl}{separator}maxUserId={senderId.Value}";
+            }
 
             var openMiniAppButton = new LinkButton
             {
                 Text = "Запустить",
-                Url = $"{miniAppUrl}{separator}maxUserId={senderId}"
+                Url = urlId
             };
 
             var helpButton = new CallbackButton
