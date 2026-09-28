@@ -17,39 +17,25 @@ using System.Threading.Tasks;
 
 namespace Autouchet_Bot;
 
-internal class Bot
+class Bot
 {
-    private static async Task Main(string[] args)
+    static async Task Main(string[] args)
     {
+        
         Env.Load();
+        string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX");
+        string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL");
+
         var builder = WebApplication.CreateBuilder(args);
-
-        string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX")
-            ?? builder.Configuration["MaxToken:TelegramToken"]
-            ?? throw new InvalidOperationException("API токен не найден");
-
-        string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL")
-            ?? builder.Configuration["BotSettings:MiniAppUrl"]
-            ?? "http://localhost";
-
-        string backendApiUrl = Environment.GetEnvironmentVariable("BackendApi__BaseUrl")
-                               ?? builder.Configuration["BackendApi:BaseUrl"]
-                               ?? "http://backend-api:8080";
-
-        builder.Services.AddHttpClient<BackendApiClient>(client =>
-        {
-            client.BaseAddress = new Uri(backendApiUrl);
-        });
-
         builder.Services.AddControllers();
         builder.Services.AddHttpClient<BackendApiClient>();
         builder.Services.AddHostedService<TaxReminderBackgroundService>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
+        
         var client = new MaxBotClient(botToken);
 
-        builder.Services.AddSingleton<IMaxBotClient>(client);
+        builder.Services.AddSingleton<IMaxBotClient>(client);    
 
         builder.Services.AddSingleton(sp => new MessageHandler(miniAppUrl));
         builder.Services.AddSingleton(sp =>
@@ -69,6 +55,7 @@ internal class Bot
         Console.WriteLine($"Бот запущен: {botInfo.FirstName} (ID: {botInfo.Id})");
         using var cts = new CancellationTokenSource();
 
+
         var _ = client.PollUpdatesWithCallback(
             async (update, botClient) =>
             {
@@ -83,17 +70,18 @@ internal class Bot
             },
             limit: 100,
             timeout: 90,
-            types: new List<string>
-            {
+            types: new List<string> 
+            { 
               UpdateTypes.MessageCreated,
               UpdateTypes.MessageCallback
             },
             cancellationToken: cts.Token
         );
-
         await app.RunAsync();
         Console.WriteLine("Нажмите Enter для завершения работы бота...");
         Console.ReadLine();
         cts.Cancel();
     }
 }
+
+
