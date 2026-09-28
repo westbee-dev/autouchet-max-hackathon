@@ -25,7 +25,7 @@ class Bot
         var builder = WebApplication.CreateBuilder(args);
 
         string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX")
-            ?? builder.Configuration["MaxToken:TelegramToken"]
+            ?? builder.Configuration["MaxToken:MaxToken"]
             ?? throw new InvalidOperationException("API токен не найден");
 
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL")
