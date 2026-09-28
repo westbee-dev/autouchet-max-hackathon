@@ -5,6 +5,7 @@ using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request;
 using MAX.Bot.Interfaces.Models.Request.Message;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
+using MAX.Bot.Interfaces.Models.Request.Message.Attachment.Payloads;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -40,7 +41,7 @@ namespace Autouchet_Bot.Handlers
                 case "accept_agreement":
                     UserService.Accept(senderId);
                     responseText = "Вы дали согласие на обработку персональных данных, можете пользоваться ботом!";
-                    keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
+                    keyboard = MainKeyboard.GetMainMenu(_miniAppUrl, senderId);
                     await _apiClient.CreateUserAsync(senderId, firstName);
                     break;
 
@@ -79,19 +80,21 @@ namespace Autouchet_Bot.Handlers
                         "*Налоговые ставки* \n" +
                         "4% - при работе с физическоми лицами\n" +
                         "6% - при работе с юридическими лицами и индивидуальными предпринимателями";
-                        
+
                     keyboard = MainKeyboard.GetHelpMenu();
                     break;
 
                 case "help_support":
-                    responseText = "Если остались вопросы, то пишете на почту `support@autotech.ru`";
+                    responseText = "Если остались вопросы, то пишете на почту **support@autotech.ru**";
                     keyboard = MainKeyboard.GetHelpMenu();
                     break;
 
                 case "help_back":
-                    responseText = "*Главное меню*";
+                    responseText = "**Главное меню**";
                     keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
                     break;
+
+
 
                 default:
                     return;
