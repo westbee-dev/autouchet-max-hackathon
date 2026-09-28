@@ -30,7 +30,7 @@ class Bot
 
         string miniAppUrl = Environment.GetEnvironmentVariable("MINI_APP_URL")
             ?? builder.Configuration["BotSettings:MiniAppUrl"]
-            ?? "http://localhost";
+            ?? "http://127.0.0.1";
 
         string backendApiUrl = Environment.GetEnvironmentVariable("BackendApi__BaseUrl")
                                ?? builder.Configuration["BackendApi:BaseUrl"]
