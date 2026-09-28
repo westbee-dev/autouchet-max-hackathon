@@ -5,6 +5,7 @@ using MAX.Bot.Interfaces.Models;
 using MAX.Bot.Interfaces.Models.Request;
 using MAX.Bot.Interfaces.Models.Request.Message;
 using MAX.Bot.Interfaces.Models.Request.Message.Attachment;
+using MAX.Bot.Interfaces.Models.Request.Message.Attachment.Payloads;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -79,7 +80,7 @@ namespace Autouchet_Bot.Handlers
                         "*Налоговые ставки* \n" +
                         "4% - при работе с физическоми лицами\n" +
                         "6% - при работе с юридическими лицами и индивидуальными предпринимателями";
-                        
+
                     keyboard = MainKeyboard.GetHelpMenu();
                     break;
 
@@ -92,6 +93,8 @@ namespace Autouchet_Bot.Handlers
                     responseText = "**Главное меню**";
                     keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
                     break;
+
+
 
                 default:
                     return;

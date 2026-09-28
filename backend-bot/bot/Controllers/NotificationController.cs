@@ -196,19 +196,5 @@ namespace Autouchet_Bot.Controllers
                 return StatusCode(500, new { success = false, error = ex.Message });
             }
         }
-
-        private static string BuildDefaultMessage(string purposeText, decimal amount, string? invoiceId)
-        {
-            var messageText = $"**Оплата прошла!**\n\n" +
-                              $"Назначение: **{purposeText}**\n" +
-                              $"Сумма: **{amount:N2} руб.**\n";
-
-            if (!string.IsNullOrEmpty(invoiceId))
-            {
-                messageText += $"🧾 Номер чека/транзакции: `{invoiceId}`\n";
-            }
-
-            return messageText + "\nДанные обновлены в системе.";
-        }
     }
 }

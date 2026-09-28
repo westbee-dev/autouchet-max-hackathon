@@ -8,12 +8,14 @@ namespace Autouchet_Bot.Keyboards
 {
     public static class MainKeyboard
     {
-        public static Attachment GetMainMenu(string miniAppUrl)
+        public static Attachment GetMainMenu(string miniAppUrl, long senderId)
         {
+            var separator = miniAppUrl.Contains('?') ? "&" : "?";
+
             var openMiniAppButton = new LinkButton
             {
                 Text = "Запустить",
-                Url = miniAppUrl
+                Url = $"{miniAppUrl}{separator}maxUserId={senderId}"
             };
 
             var helpButton = new CallbackButton
@@ -134,6 +136,5 @@ namespace Autouchet_Bot.Keyboards
                 }
             };
         }
-
     }
 }
