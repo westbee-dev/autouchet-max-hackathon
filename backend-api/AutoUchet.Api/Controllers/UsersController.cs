@@ -26,13 +26,13 @@ namespace AutoUchet.Api.Controllers
             var endOfMonth = startOfMonth.AddMonths(1);
 
             var summary = await _context.Users
-                .Where(u => u.RemindAboutTax == true)
+                .Where(u => u.RemindAboutTax)
                 .Select(u => new TaxSummaryDto
                 {
                     MaxUserId = u.MaxUserId,
-                    TaxAmount = (u.Receipts
-                    .Where(r => r.Status == "Paid" && r.PaidAt >= startOfMonth && r.PaidAt < endOfMonth)
-                    .Sum(r => (decimal?)r.Amount) ?? 0m) * u.TaxRate
+                    TaxAmount = u.Receipts
+                        .Where(r => r.Status == "Paid" && r.PaidAt >= startOfMonth && r.PaidAt < endOfMonth)
+                        .Sum(r => r.Amount * (r.BuyerType == "Физ" ? 0.04m : 0.06m))
                 })
                 .Where(u => u.TaxAmount > 0)
                 .ToListAsync();
@@ -41,8 +41,7 @@ namespace AutoUchet.Api.Controllers
         }
 
         [HttpGet("profile")]
-        public async Task<ActionResult<ProfileDto>> GetUserProfile
-            ([FromQuery] long maxUserId)
+        public async Task<ActionResult<ProfileDto>> GetUserProfile([FromQuery] long maxUserId)
         {
             var user = await _context.Users
                 .Include(u => u.Activities)
@@ -52,10 +51,14 @@ namespace AutoUchet.Api.Controllers
 
             var nowDate = DateTime.UtcNow;
 
+            var startOfYear = new DateTime(nowDate.Year, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var endOfYear = startOfYear.AddYears(1);
+
             var receiptsQuery = _context.Receipts
                 .Where(r => r.UserId == user.Id &&
                             r.Status == "Paid" &&
-                            r.CreatedAt.Year == nowDate.Year);
+                            r.PaidAt >= startOfYear &&
+                            r.PaidAt < endOfYear);
 
             var totalIncomeYear = receiptsQuery.Sum(r => r.Amount);
             var receiptCountYear = receiptsQuery.Count();
