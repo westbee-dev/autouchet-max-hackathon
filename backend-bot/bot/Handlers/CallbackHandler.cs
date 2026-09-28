@@ -41,7 +41,7 @@ namespace Autouchet_Bot.Handlers
                 case "accept_agreement":
                     UserService.Accept(senderId);
                     responseText = "Вы дали согласие на обработку персональных данных, можете пользоваться ботом!";
-                    keyboard = MainKeyboard.GetMainMenu(_miniAppUrl);
+                    keyboard = MainKeyboard.GetMainMenu(_miniAppUrl, senderId);
                     await _apiClient.CreateUserAsync(senderId, firstName);
                     break;
 
