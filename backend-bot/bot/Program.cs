@@ -39,7 +39,10 @@ class Bot
 
 
         builder.Services.AddControllers();
-        builder.Services.AddHttpClient<BackendApiClient>();
+        builder.Services.AddHttpClient<BackendApiClient>(client =>
+        {
+            client.BaseAddress = new Uri(backendApiUrl);
+        });
         builder.Services.AddHostedService<TaxReminderBackgroundService>();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
