@@ -11,7 +11,7 @@
         var receipt = id ? Atc.getReceiptById(id) : null;
 
         if (!receipt) {
-            window.location.href = 'home.html';
+            window.location.href = 'index.html';
             return;
         }
 
@@ -54,7 +54,7 @@
                 var current = Atc.getReceiptById(id);
                 if (!current) {
                     stopPolling();
-                    window.location.href = 'home.html';
+                    window.location.href = 'index.html';
                 } else if (current.status === 'expired') {
                     stopPolling();
                     window.location.href = 'paid_expired.html?id=' + id;

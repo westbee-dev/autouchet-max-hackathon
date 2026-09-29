@@ -7,7 +7,7 @@
             var receipt = id ? Atc.getReceiptById(id) : null;
 
             if (!receipt) {
-                window.location.href = 'home.html';
+                window.location.href = 'index.html';
                 return;
             }
 

@@ -20,10 +20,16 @@ namespace Autouchet_Bot.Keyboards
                 urlId = $"{miniAppUrl}{separator}maxUserId={senderId.Value}";
             }
 
-            var openMiniAppButton = new LinkButton
+            //var openMiniAppButton = new LinkButton
+            //{
+            //    Text = "Запустить",
+            //    Url = urlId
+            //};
+            var openMiniAppButton = new OpenAppButton
             {
                 Text = "Запустить",
-                Url = urlId
+                WebApp = "t803_hakaton_max_bot",
+                Payload = senderId.HasValue ? senderId.Value.ToString() : null
             };
 
             var helpButton = new CallbackButton

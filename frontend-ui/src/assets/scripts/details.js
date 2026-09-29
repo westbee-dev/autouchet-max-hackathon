@@ -6,7 +6,7 @@
         var receipt = id ? Atc.getReceiptById(id) : null;
 
         if (!receipt) {
-            window.location.href = 'home.html';
+            window.location.href = 'index.html';
             return;
         }
 
@@ -92,7 +92,7 @@
         if (confirmBtn) {
             confirmBtn.addEventListener('click', function () {
                 Atc.removeReceipt(id).then(function () {
-                    window.location.href = 'home.html';
+                    window.location.href = 'index.html';
                 }).catch(function (error) {
                     console.error(error);
                     alert('Не удалось удалить чек. Попробуйте ещё раз.');
