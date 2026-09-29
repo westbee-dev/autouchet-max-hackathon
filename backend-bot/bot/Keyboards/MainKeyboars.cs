@@ -28,7 +28,7 @@ namespace Autouchet_Bot.Keyboards
             var openMiniAppButton = new OpenAppButton
             {
                 Text = "Запустить",
-                WebApp = "t803_hakaton_max_bot",
+                WebApp = "https://max.ru/t803_hakaton_max_bot?startapp",
                 Payload = senderId.HasValue ? senderId.Value.ToString() : null
             };
 
