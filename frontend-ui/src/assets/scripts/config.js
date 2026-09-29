@@ -2,35 +2,17 @@
     'use strict';
 
     var MAX_USER_ID_KEY = 'atc_max_user_id';
-    var API_URL_KEY = 'atc_api_url';
-    var API_URL = 'http://localhost:5000';
 
-    function getApiUrl() {
-        var fromQuery = new URLSearchParams(window.location.search).get('apiUrl');
+    function getInitDataUser() {
+        var app = window.MAX || window.Max || window.WebApp;
+        var initData = app && app.initData;
 
-        if (fromQuery) {
-            try {
-                localStorage.setItem(API_URL_KEY, fromQuery);
-            } catch (e) {
-                console.error('Не удалось сохранить apiUrl:', e);
-            }
-            return fromQuery;
-        }
-
-        try {
-            return localStorage.getItem(API_URL_KEY) || API_URL;
-        } catch (e) {
-            return API_URL;
-        }
-    }
-
-    function getMaxUser() {
-        var app = window.WebApp;
-        return app && app.initDataUnsafe && app.initDataUnsafe.user ? app.initDataUnsafe.user : null;
+        if (!initData || !initData.user) return null;
+        return initData.user;
     }
 
     function getMaxUserId() {
-        var user = getMaxUser();
+        var user = getInitDataUser();
 
         if (user && user.id) {
             var fromMax = String(user.id);
@@ -62,8 +44,11 @@
     }
 
     window.ATC_CONFIG = {
-        baseUrl: getApiUrl(),
+        baseUrl: '',
         getMaxUserId: getMaxUserId,
-        getInitData: function () { return window.WebApp ? window.WebApp.initData : null; }
+        getInitData: function () {
+            var app = window.MAX || window.Max || window.WebApp;
+            return app && app.initData ? app.initData : null;
+        }
     };
 })(window);
