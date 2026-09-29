@@ -27,7 +27,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
-      - BotSettings__NotificationUrl=http://backend-bot:8080
+      - BotSettings__NotificationUrl=http://backend-bot:8080/api/notification/payment-success
 
   backend-bot:
     build:

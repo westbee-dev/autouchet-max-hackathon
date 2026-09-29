@@ -212,6 +212,8 @@
             });
     }
 
+    
+
     function isCountedStatus(status) {
         return status === 'paid' || status === 'manual_recorded';
     }

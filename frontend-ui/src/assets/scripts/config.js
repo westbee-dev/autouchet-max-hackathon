@@ -42,7 +42,6 @@
             return null;
         }
     }
-
     window.ATC_CONFIG = {
         baseUrl: '',
         getMaxUserId: getMaxUserId,
