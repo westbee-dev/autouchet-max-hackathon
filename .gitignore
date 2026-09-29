@@ -4,6 +4,7 @@
 **/*.user
 **/*.suo
 **/*.vs/
+**/*.http
 **/appsettings.Development.json
 **/appsettings.Production.json
 
