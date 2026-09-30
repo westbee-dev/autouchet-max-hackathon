@@ -4,6 +4,9 @@
 **/*.user
 **/*.suo
 **/*.vs/
+**/*.http
+**/appsettings.Development.json
+**/appsettings.Production.json
 
 # Node.js
 **/node_modules/

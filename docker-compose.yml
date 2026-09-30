@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres_db:
+    image: postgres:16-alpine
+    container_name: autouchet_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend-api:
+    build:
+      context: ./backend-api
+      dockerfile: Dockerfile
+    container_name: autouchet_api
+    restart: always
+    ports:
+      - "5000:8080"
+    depends_on:
+      - postgres_db
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres_db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - BotSettings__NotificationUrl=http://backend-bot:8080/api/notification/payment-success
+
+  backend-bot:
+    build:
+      context: ./backend-bot
+      dockerfile: Dockerfile
+    container_name: autouchet_bot
+    restart: always
+    depends_on:
+      - backend-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - BotSettings__MaxToken=${BOT_MAX_TOKEN}
+      - BotSettings__MiniAppUrl=${MINI_APP_URL}
+      - BackendApi__BaseUrl=http://backend-api:8080
+
+  frontend-ui:
+    build:
+      context: ./frontend-ui
+      dockerfile: Dockerfile
+    container_name: autouchet_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend-api
+
+volumes:
+  postgres_data:

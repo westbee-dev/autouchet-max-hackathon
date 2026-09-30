@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="src/assets/styles/main.css">
+    <link rel="stylesheet" href="src/assets/styles/pages/export_page.css">
+    <script src="https://st.max.ru/js/max-web-app.js"></script>
+    <title>Экспорт отчета</title>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <a href="index.html">
+                <img src="src/assets/images/back_button.png" class="back_button" alt="Назад">
+            </a>
+            <span class="header_text">Экспорт отчета</span>
+        </header>
+
+        <main>
+            <form class="export_form" id="export-form">
+                <p class="export_description">В отчет попадут оплаченные и вручную зафиксированные чеки за выбранный квартал</p>
+
+                <div class="quarter_list">
+                    <div class="rope_line"></div>
+                </div>
+            </form>
+        </main>
+
+        <footer class="export_footer">
+            <button type="submit" form="export-form" class="button">Сформировать</button>
+        </footer>
+    </div>
+
+    <script src="src/assets/scripts/config.js" defer></script>
+    <script src="src/assets/scripts/api.js" defer></script>
+    <script src="src/assets/scripts/storage.js" defer></script>
+    <script src="src/assets/scripts/export_page.js" defer></script>
+</body>
+</html>

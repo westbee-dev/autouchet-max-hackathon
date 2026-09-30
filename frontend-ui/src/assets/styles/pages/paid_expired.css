@@ -1,0 +1,70 @@
+.status_content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 42px 0 5px;
+}
+
+.expired {
+    position: relative;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background-color: #f7e3de;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.expired_check {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 30px;
+    color: #1d1d1f;
+}
+
+.status_info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;  
+    text-align: center;
+    max-width: 250px;
+    margin: 20px auto;
+}
+
+.info_header {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 15px;
+}
+
+.desc_header {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #86868b;
+    font-size: 13px;
+    margin: 5px 0 0 0;
+}
+
+.new_link_button {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 93px auto;
+    width: 100%;
+    max-width: 284px;
+    height: 34px;
+}
+
+.button {
+    width: 100%;
+    background-color: #006b41;
+    border: none;
+    outline: none;
+    border-radius: 17px;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #ffffff;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 7px 0;
+    box-shadow: inset 0 0 7px 0px rgba(255, 255, 255, 0.51);
+}

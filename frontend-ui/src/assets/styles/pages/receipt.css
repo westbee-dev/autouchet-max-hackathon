@@ -1,0 +1,177 @@
+.header_txt {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 11px;
+    margin: 0 0 0 5px;
+}
+
+.receipt_form {
+    display: flex;
+    flex-direction: column;
+    margin: 35px 0 0 0;
+    color: #86868b;
+}
+
+.receipt_info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 0 0 15px 0;
+}
+
+.customer_type_toggle {
+    display: flex;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 329px;
+    box-sizing: border-box;
+    height: 31px;
+    border-radius: 9px;
+}
+
+.toggle_input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.toggle_title {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 12px;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    cursor: pointer;
+    text-align: center;
+    margin: 6px;
+}
+
+.customer_case {
+    display: flex;
+    position: relative;
+    flex: 1;
+}
+
+.toggle_input:checked + .toggle_title {
+    background-color: #f4f6f4;
+    height: 27px;
+    margin: 2px;
+}
+
+.amount_input {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    background-color: #ffffff;
+    font-size: 16px;
+    width: 100%;
+    max-width: 329px;
+    box-sizing: border-box;
+    height: 44px;
+    border-radius: 9px;
+    border: none;
+    outline: none;
+    padding: 0 0 0 15px;
+}
+
+
+.amount_input::-webkit-outer-spin-button,
+.amount_input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.amount_input:focus {
+    box-shadow: 0 0 0 1px #142b2333;
+}
+
+.amount_input[type="date"] {
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    color: #1f1f1f;
+    padding: 0 15px;
+}
+
+.amount_input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.45;
+}
+
+.amount_input[type="date"]::-webkit-datetime-edit {
+    padding: 0;
+}
+
+.customer_type_hint {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #8f8f93;
+    background-color: #ffffff;
+    border-radius: 9px;
+    padding: 10px 12px;
+    margin: 6px 0 0 0;
+}
+
+.arrow_fix {
+    position: relative;
+}
+
+.activity_select {
+    font-family: 'SF Pro Display-Regular', sans-serif, Arial;
+    color: #1f1f1f;
+    font-size: 13px;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 329px;
+    box-sizing: border-box;
+    height: 36px;
+    padding: 0 40px 0 15px;
+    border: none;
+    outline: none;
+    border-radius: 9px;
+    appearance: none
+}
+
+.arrow_fix::after {
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 35px;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid #86868b;
+    border-bottom: 2px solid #86868b;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+}
+
+.receipt_footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.button {
+    border: none;
+    outline: none;
+    border-radius: 17px;
+    font-family: 'SF Pro Display-Semibold', sans-serif, Arial;
+    font-size: 15px;
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+.button_individual {
+    background-color: #006b41;
+    color: #ffffff;
+    box-shadow: inset 0 0 7px 0px rgba(255, 255, 255, 0.51);
+}
+
+.button_legal {
+    color:#1f1f1f;
+    background-color: #ffffff;
+}
+
+.button--disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    box-shadow: none;
+}
