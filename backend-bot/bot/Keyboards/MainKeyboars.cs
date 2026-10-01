@@ -71,11 +71,6 @@ namespace Autouchet_Bot.Keyboards
                         },
                         new List<Button>
                         {
-                            new CallbackButton { Text = "Другой вопрос",
-                                Payload = "help_support" }
-                        },
-                        new List<Button>
-                        {
                             new CallbackButton { Text = "Назад", Payload = "help_back" }
                         }
                     }
