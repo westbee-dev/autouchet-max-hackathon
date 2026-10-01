@@ -2,7 +2,8 @@
     'use strict';
 
     function baseUrl() {
-        return window.ATC_CONFIG.baseUrl;
+        var url = window.ATC_CONFIG.baseUrl || '';
+        return url.replace(/\/+$/, '');
     }
 
     function buildUrl(path, query) {
