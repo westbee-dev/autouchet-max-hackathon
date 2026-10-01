@@ -12,6 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -73,6 +75,8 @@ class Bot
 
         _ = Task.Run(async () =>
         {
+            long? marker = null;
+
             while (!cts.Token.IsCancellationRequested)
             {
                 try
@@ -91,6 +95,7 @@ class Bot
                         },
                         limit: 100,
                         timeout: 90,
+                        marker: marker,
                         types: new List<string>
                         {
                           UpdateTypes.MessageCreated,
@@ -105,11 +110,21 @@ class Bot
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"[Polling] Ошибка: {ex.Message}. Переподключение через 5 секунд...");
+                    Console.WriteLine($"[Polling] Ошибка: {ex.Message}");
 
                     try
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
+                        marker = await GetCurrentMarkerAsync(botToken, cts.Token);
+                        Console.WriteLine($"[Polling] Проблемный апдейт пропущен, продолжаю с marker={marker}");
+                    }
+                    catch (Exception markerError)
+                    {
+                        Console.WriteLine($"[Polling] Не удалось получить marker: {markerError.Message}");
+                    }
+
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(3), cts.Token);
                     }
                     catch (OperationCanceledException)
                     {
@@ -123,6 +138,22 @@ class Bot
         Console.WriteLine("Нажмите Enter для завершения работы бота...");
         Console.ReadLine();
         cts.Cancel();
+    }
+
+    static async Task<long?> GetCurrentMarkerAsync(string token, CancellationToken cancellationToken)
+    {
+        using var http = new HttpClient();
+        using var request = new HttpRequestMessage(HttpMethod.Get, "https://platform-api2.max.ru/updates?limit=1&timeout=0");
+        request.Headers.TryAddWithoutValidation("Authorization", token);
+
+        using var response = await http.SendAsync(request, cancellationToken);
+        var json = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        using var document = JsonDocument.Parse(json);
+
+        return document.RootElement.TryGetProperty("marker", out var marker) && marker.TryGetInt64(out var value)
+            ? value
+            : null;
     }
 }
 
