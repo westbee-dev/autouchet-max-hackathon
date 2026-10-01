@@ -25,6 +25,7 @@ class Bot
         var builder = WebApplication.CreateBuilder(args);
 
         string botToken = Environment.GetEnvironmentVariable("API_KEY_MAX")
+            ?? builder.Configuration["BotSettings:MaxToken"]
             ?? builder.Configuration["MaxToken:MaxToken"]
             ?? throw new InvalidOperationException("API токен не найден");
 
@@ -70,27 +71,54 @@ class Bot
         using var cts = new CancellationTokenSource();
 
 
-        var _ = client.PollUpdatesWithCallback(
-            async (update, botClient) =>
+        _ = Task.Run(async () =>
+        {
+            while (!cts.Token.IsCancellationRequested)
             {
-                if (update is MessageCreatedUpdate messageCreated)
+                try
                 {
-                    await messageHandler.HandleAsync(messageCreated, client);
+                    await client.PollUpdatesWithCallback(
+                        async (update, botClient) =>
+                        {
+                            if (update is MessageCreatedUpdate messageCreated)
+                            {
+                                await messageHandler.HandleAsync(messageCreated, client);
+                            }
+                            else if (update is MessageCallbackUpdate callbackUpdate)
+                            {
+                                await callbackHandler.HandleAsync(callbackUpdate, client);
+                            }
+                        },
+                        limit: 100,
+                        timeout: 90,
+                        types: new List<string>
+                        {
+                          UpdateTypes.MessageCreated,
+                          UpdateTypes.MessageCallback
+                        },
+                        cancellationToken: cts.Token
+                    );
                 }
-                else if (update is MessageCallbackUpdate callbackUpdate)
+                catch (OperationCanceledException)
                 {
-                    await callbackHandler.HandleAsync(callbackUpdate, client);
+                    break;
                 }
-            },
-            limit: 100,
-            timeout: 90,
-            types: new List<string> 
-            { 
-              UpdateTypes.MessageCreated,
-              UpdateTypes.MessageCallback
-            },
-            cancellationToken: cts.Token
-        );
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[Polling] Ошибка: {ex.Message}. Переподключение через 5 секунд...");
+
+                    try
+                    {
+                        await Task.Delay(TimeSpan.FromSeconds(5), cts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        break;
+                    }
+                }
+            }
+        });
+
         await app.RunAsync();
         Console.WriteLine("Нажмите Enter для завершения работы бота...");
         Console.ReadLine();

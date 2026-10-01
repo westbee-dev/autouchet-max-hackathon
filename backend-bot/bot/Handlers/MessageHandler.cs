@@ -46,7 +46,7 @@ namespace Autouchet_Bot.Handlers
                 responseText = $"Я не могу ответить на ваш вопрос. Выберите подходящий вариант кнопки";
             }
 
-            var keyboardAttachment = MainKeyboard.GetMainMenu(_miniAppUrl);
+            var keyboardAttachment = MainKeyboard.GetMainMenu(_miniAppUrl, senderId);
 
             var sendRequest = new SendMessageRequest
             {
