@@ -59,8 +59,10 @@
         var id = window.ATC_CONFIG.getMaxUserId();
 
         if (!id) {
+            var detail = window.ATC_CONFIG.describe ? ' [' + window.ATC_CONFIG.describe() + ']' : '';
+
             throw new Error(
-                'Вы не авторизовались. Откройте приложение по ссылке из бота'
+                'Вы не авторизовались. Откройте приложение по ссылке из бота' + detail
             );
         }
 

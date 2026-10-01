@@ -50,7 +50,8 @@
             return rememberUserId(unsafe.start_param);
         }
 
-        var fromQuery = new URLSearchParams(window.location.search).get('maxUserId');
+        var params = new URLSearchParams(window.location.search);
+        var fromQuery = params.get('WebAppStartParam') || params.get('maxUserId');
 
         if (fromQuery) {
             return rememberUserId(fromQuery);
@@ -62,6 +63,18 @@
             return null;
         }
     }
+    function describe() {
+        var app = getApp();
+        var unsafe = getInitDataUnsafe();
+
+        return [
+            'sdk=' + (app ? 'yes' : 'no'),
+            'user=' + (unsafe && unsafe.user ? unsafe.user.id : '-'),
+            'start_param=' + (unsafe && unsafe.start_param ? unsafe.start_param : '-'),
+            'search=' + (window.location.search || '-')
+        ].join(' | ');
+    }
+
     window.ATC_CONFIG = {
         // Для запуска через nginx на том же origin оставьте пустым.
         // При хостинге фронта отдельно (например, Cloudflare) укажите адрес API,
@@ -70,6 +83,7 @@
         getMaxUserId: getMaxUserId,
         getInitData: function () {
             return getInitDataUnsafe();
-        }
+        },
+        describe: describe
     };
 })(window);
